@@ -1,0 +1,9 @@
+{
+  "generator-node": {
+    "promptValues": {
+      "authorName": "Chris O'Donnell",
+      "authorEmail": "dev@codfish.io",
+      "authorUrl": "https://codfish.io/"
+    }
+  }
+}
