@@ -46,9 +46,8 @@
   },
   "scripts": {
     "fix": "npm run format && npm run lint -- --fix",
-    "format": "prettier --write \"**/*.{js,json,css,scss,md,html}\"",
-    "lint": "npm run lint:js && npm run lint:md",
-    "lint:js": "eslint .",
+    "format": "prettier --write \"**/*.{json,css,scss,md,html}\"",
+    "lint": "eslint .",
     "lint:md": "markdownlint --ignore node_modules **/*.md",
     "test": "jest"
   },
