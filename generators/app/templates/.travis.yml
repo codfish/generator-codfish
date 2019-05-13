@@ -1,0 +1,21 @@
+sudo: false
+
+language: node_js
+
+node_js: '10.15.3'
+
+cache:
+  directories:
+    - ~/.npm
+
+notifications:
+  email: false
+
+install: npm ci --no-save
+
+script: npm run validate
+
+after_success: npx semantic-release
+
+branches:
+  only: master
