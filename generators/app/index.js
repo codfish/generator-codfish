@@ -42,6 +42,13 @@ module.exports = class extends BaseGenerator {
   initializing() {
     this.props = extend({}, this.props, this.options);
     this.cwd = this.destinationPath(this.props.projectDirectory);
+
+    // initialize git repo
+    this.spawnCommandSync('git', ['init', '--quiet'], {
+      cwd: this.destinationPath(this.props.projectDirectory),
+      dieOnError: true,
+      message: 'Encountered an issue initiating this as a git repository',
+    });
   }
 
   async prompting() {
@@ -189,13 +196,6 @@ module.exports = class extends BaseGenerator {
 
     const travisUrl = chalk.cyan(`https://travis-ci.com/profile/${this.props.githubAccount || ''}`);
     this.log(`\nEnable Travis integration at ${travisUrl}`);
-
-    // TODO
-    this.spawnCommandSync('git', ['init', '--quiet'], {
-      cwd: this.destinationPath(this.props.projectDirectory),
-      dieOnError: true,
-      message: 'Encountered an issue initiating this as a git repository',
-    });
 
     // add the repo url as the `origin` remote
     this.spawnCommandSync('git', ['remote', 'add', 'origin', repo], { cwd });
