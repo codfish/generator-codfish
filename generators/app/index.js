@@ -203,6 +203,9 @@ module.exports = class extends BaseGenerator {
     // semantic releast initializing
     if (this.props.semantic) {
       this.spawnCommandSync('npx', ['semantic-release-cli', 'init'], { cwd });
+
+      // cleanup after semantic-release-cli
+      this.spawnCommandSync('git', ['reset', '--hard', 'HEAD'], { cwd });
     }
   }
 };
