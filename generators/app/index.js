@@ -40,15 +40,11 @@ module.exports = class extends BaseGenerator {
   }
 
   initializing() {
-    this.props = extend({}, this.props, this.options);
+    this.props = extend({}, this.props, this.options, { new: true });
     this.cwd = this.destinationPath(this.props.projectDirectory);
 
     // initialize git repo
-    this.spawnCommandSync('git', ['init', '--quiet'], {
-      cwd: this.destinationPath(this.props.projectDirectory),
-      dieOnError: true,
-      message: 'Encountered an issue initiating this as a git repository',
-    });
+    this.initGitRepo(this.options.projectDirectory);
   }
 
   async prompting() {

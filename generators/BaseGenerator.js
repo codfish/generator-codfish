@@ -1,3 +1,4 @@
+const fs = require('fs');
 const chalk = require('chalk');
 const Generator = require('yeoman-generator');
 
@@ -50,6 +51,31 @@ module.exports = class extends Generator {
    */
   mv(from, to) {
     this.fs.move(this.destinationPath(from), this.destinationPath(to));
+  }
+
+  /**
+   * Initialize a git repository in the provided directory.
+   *
+   * If it's a git repo already, turn off the new flag to help us in future methods.
+   *
+   * @param {string} directory - Directory to initialize the repo in.
+   */
+  initGitRepo(directory) {
+    if (fs.existsSync(this.destinationPath(directory, '.git'))) {
+      this.props.new = false;
+    } else {
+      // otherwise initialize a git repo. need to make sure directory exists first
+      this.spawnCommandSync('mkdir', ['-p', this.destinationPath(directory)], {
+        dieOnError: true,
+        message: `Error: could not create directory ${this.destinationPath(directory)}`,
+      });
+
+      this.spawnCommandSync('git', ['init', '--quiet'], {
+        cwd: this.destinationPath(directory),
+        dieOnError: true,
+        message: 'Encountered an issue initiating this as a git repository',
+      });
+    }
   }
 
   /**
