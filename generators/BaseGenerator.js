@@ -107,13 +107,13 @@ module.exports = class extends Generator {
     this.log();
     this.log(
       chalk.cyan(
-        `\nSuccess! The project was generated in ./${chalk.green(this.props.projectDirectory)}.`,
+        `Success! The project was generated in ${chalk.green(`./${this.props.projectDirectory}`)}.`,
       ),
     );
     this.log();
     this.log(
       chalk.cyan(
-        `\tWe've initialized a git repo ${chalk.green(
+        `  We've initialized a git repo ${chalk.green(
           gitRepo,
         )} and made an initial commit for you.`,
       ),
@@ -121,7 +121,7 @@ module.exports = class extends Generator {
     this.log();
     this.log(
       chalk.cyan(
-        `\tCreate the repository in Github and run \`git push origin master\` to push your new project up.`,
+        `  Create the repository in Github and run \`git push origin master\` to push your new project up.`,
       ),
     );
     this.log();
