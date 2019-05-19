@@ -73,21 +73,33 @@ module.exports = class extends Generator {
     this.log(`Run ${chalk.cyan(`yo codfish${sub && `:${sub}`} --help`)} to see all options.`);
   }
 
+  /**
+   * Display a message when the generator completes.
+   */
   showCompletionMessage() {
     const gitRepo = `${this.props.githubAccount}/${this.props.localName}`;
-
+    this.log();
     this.log(
-      chalk.cyan(`\nSuccess! The project was generated in ./${chalk.green(
-        this.props.projectDirectory,
-      )}.
-
-  We've initialized a git repo ${chalk.green(gitRepo)} and made an initial commit for you.
-  Create the repository in Github and run \`git push origin master\` to push your new project up.
-
-  Thanks for scaffolding your project with us!
-  `),
+      chalk.cyan(
+        `\nSuccess! The project was generated in ./${chalk.green(this.props.projectDirectory)}.`,
+      ),
     );
-    this.log('Thanks for using Yeoman.');
+    this.log();
+    this.log(
+      chalk.cyan(
+        `\tWe've initialized a git repo ${chalk.green(
+          gitRepo,
+        )} and made an initial commit for you.`,
+      ),
+    );
+    this.log();
+    this.log(
+      chalk.cyan(
+        `\tCreate the repository in Github and run \`git push origin master\` to push your new project up.`,
+      ),
+    );
+    this.log();
+    this.log(chalk.cyan('Thanks for scaffolding your project with us!'));
   }
 
   /**
