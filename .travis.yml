@@ -2,10 +2,7 @@ sudo: false
 
 language: node_js
 
-node_js:
-  - '12'
-  - '10'
-  - '8'
+node_js: '12'
 
 cache:
   directories:
@@ -14,7 +11,7 @@ cache:
 notifications:
   email: false
 
-install: npm ci --no-save
+install: npm install --no-save
 
 script: npm run validate
 
