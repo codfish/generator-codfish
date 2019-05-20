@@ -48,12 +48,13 @@ yo codfish:linting .
 ## Github
 
 This generator will attempt to set up a new Github repo & `semantic-release` for you out of the box.
-You'll be prompted to enter credentials, that's to be expected. If you have any of the following
-environment variables set, it will attempt to use them instead:
+You will be prompted to enter credentials, that's to be expected.
+
+If you have any of the following environment variables set, it will attempt to use them instead for
+Github repository creation:
 
 - `GITHUB_TOKEN`
 - `GH_TOKEN`
-- `NPM_TOKEN`
 
 ## CLI Options
 

@@ -217,18 +217,8 @@ module.exports = class extends BaseGenerator {
 
     // semantic releast initializing
     if (this.props.semantic) {
-      this.spawnCommandSync(
-        'npx',
-        [
-          'semantic-release-cli',
-          'setup',
-          '--gh-token',
-          process.env.GITHUB_TOKEN || process.env.GH_TOKEN,
-          '--npm-token',
-          process.env.NPM_TOKEN,
-        ],
-        { cwd },
-      );
+      this.log(`\n\nSetting up semantic-relase...\n`);
+      this.spawnCommandSync('npx', ['semantic-release-cli', 'setup'], { cwd });
 
       // cleanup after semantic-release-cli
       this.spawnCommandSync('git', ['reset', '--hard', 'HEAD'], { cwd });
