@@ -9,5 +9,6 @@
     "allowed_elements": ["sup"]
   },
   "MD033": false,
+  "MD034": false,
   "MD041": false
 }
