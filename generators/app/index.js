@@ -2,7 +2,7 @@ const extend = require('lodash/merge');
 const kebabCase = require('lodash/kebabCase');
 const githubUsername = require('github-username');
 const BaseGenerator = require('../BaseGenerator');
-const { askForModuleName } = require('./utils');
+const { askForModuleName } = require('../utils');
 
 const dependencies = [];
 const devDependencies = ['@babel/cli@7', '@babel/core@7', '@babel/preset-env@7', 'jest@^24'];
