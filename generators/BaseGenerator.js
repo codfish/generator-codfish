@@ -104,28 +104,22 @@ module.exports = class extends Generator {
    */
   showCompletionMessage() {
     const gitRepo = `${this.props.githubAccount}/${this.props.localName}`;
+    const travisUrl = `https://travis-ci.org/profile/${this.props.githubAccount}`;
+
     this.log();
     this.log(
       chalk.cyan(
-        `Success! The project was generated in ${chalk.green(`./${this.props.projectDirectory}`)}.`,
+        `Success! The project was generated in ${chalk.green(`${this.props.projectDirectory}`)}.`,
       ),
     );
+    this.log();
+    this.log(chalk.cyan(`Enable Travis integration at ${chalk.green(travisUrl)}`));
     this.log();
     this.log(
       chalk.cyan(
-        `  We've initialized a git repo ${chalk.green(
-          gitRepo,
-        )} and made an initial commit for you.`,
+        `We've initialized a git repo ${chalk.green(gitRepo)} and made an initial commit for you.`,
       ),
     );
-    this.log();
-    this.log(
-      chalk.cyan(
-        `  Create the repository in Github and run \`git push origin master\` to push your new project up.`,
-      ),
-    );
-    this.log();
-    this.log(chalk.cyan('Thanks for scaffolding your project with us!'));
   }
 
   /**

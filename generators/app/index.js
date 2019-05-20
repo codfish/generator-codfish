@@ -1,7 +1,6 @@
 const extend = require('lodash/merge');
 const kebabCase = require('lodash/kebabCase');
 const githubUsername = require('github-username');
-const chalk = require('chalk');
 const BaseGenerator = require('../BaseGenerator');
 const { askForModuleName } = require('./utils');
 
@@ -37,6 +36,23 @@ module.exports = class extends BaseGenerator {
       message: 'GitHub username or organization',
       default: username,
     });
+  }
+
+  /**
+   * Create new github repository.
+   */
+  _createGithubRepo() {
+    try {
+      this.spawnCommandSync('sh', [
+        require.resolve('../../bin/create-repo.sh'),
+        this.props.githubAccount,
+        this.props.localName,
+      ]);
+    } catch (err) {
+      this.log(
+        'We were not able to create a new repo in Github for you. You need to create one yourself: https://github.com/new',
+      );
+    }
   }
 
   initializing() {
@@ -130,6 +146,8 @@ module.exports = class extends BaseGenerator {
   }
 
   default() {
+    this._createGithubRepo();
+
     this.composeWith(require.resolve('../linting'), {
       projectDirectory: this.props.projectDirectory,
     });
@@ -187,11 +205,8 @@ module.exports = class extends BaseGenerator {
     this.on('end', () => this.showCompletionMessage());
     this.on('end', this.deleteRcFile);
 
-    const repo = `https://github.com/${this.props.githubAccount}/${this.props.localName}`;
+    const repo = `git@github.com:${this.props.githubAccount}/${this.props.localName}.git`;
     const cwd = this.props.projectDirectory;
-
-    const travisUrl = chalk.cyan(`https://travis-ci.com/profile/${this.props.githubAccount || ''}`);
-    this.log(`\nEnable Travis integration at ${travisUrl}`);
 
     // add the repo url as the `origin` remote
     this.spawnCommandSync('git', ['remote', 'add', 'origin', repo], { cwd });
@@ -202,7 +217,18 @@ module.exports = class extends BaseGenerator {
 
     // semantic releast initializing
     if (this.props.semantic) {
-      this.spawnCommandSync('npx', ['semantic-release-cli', 'init'], { cwd });
+      this.spawnCommandSync(
+        'npx',
+        [
+          'semantic-release-cli',
+          'setup',
+          '--gh-token',
+          process.env.GITHUB_TOKEN || process.env.GH_TOKEN,
+          '--npm-token',
+          process.env.NPM_TOKEN,
+        ],
+        { cwd },
+      );
 
       // cleanup after semantic-release-cli
       this.spawnCommandSync('git', ['reset', '--hard', 'HEAD'], { cwd });

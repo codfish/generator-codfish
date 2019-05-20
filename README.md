@@ -2,6 +2,14 @@
 
 > Yeoman generators to scaffold out personal projects & open source modules.
 
+Ultimate goal is to get up and running as quickly as possible. This is a generator I will use to
+scaffold out new projects and npm modules. It goes further than just setting up code. It will also:
+
+- Create a new Github repo for you ([more details below](#Github))
+- Tries to setup [semantic-release](https://semantic-release.gitbook.io/semantic-release/)
+- Sets up auto-linting on commit, as well as CI/CD
+- Init's git and makes an initial commit. All you need to do is `git push origin master`.
+
 ## Installation
 
 First, install [Yeoman](http://yeoman.io) and generator-codfish using [npm](https://www.npmjs.com/)
@@ -36,6 +44,16 @@ yo codfish .
 cd /path/to/project-directory
 yo codfish:linting .
 ```
+
+## Github
+
+This generator will attempt to set up a new Github repo & `semantic-release` for you out of the box.
+You'll be prompted to enter credentials, that's to be expected. If you have any of the following
+environment variables set, it will attempt to use them instead:
+
+- `GITHUB_TOKEN`
+- `GH_TOKEN`
+- `NPM_TOKEN`
 
 ## CLI Options
 
