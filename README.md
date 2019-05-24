@@ -32,11 +32,19 @@ Generate your new project: `yo codfish[:<sub>] <project-directory> [<options>]`
 **For Example:**
 
 ```sh
-# scaffold a new project into a directory named `new-module`
+# Scaffold a new project into a directory named `new-module`.
 yo codfish new-module
 
-# scaffold a new project into the current directory
+# Scaffold a new project into the current directory.
 yo codfish .
+
+# By default the generator automatically tries to create a github repository for you.
+# This will skip that.
+yo codfish new-module --skip-github
+
+# By default the generator automatically tries to setup semantic-release for you.
+# This will skip that.
+yo codfish new-module --skip-semantic
 
 # To add my linting configuration & tooling to an existing project
 # you can run the linting sub generator directly. When starting a project with
@@ -44,6 +52,12 @@ yo codfish .
 cd /path/to/project-directory
 yo codfish:linting .
 ```
+
+## CLI Options
+
+- `skip-install` (Boolean, default: `false`) - Skip installation of npm dependencies.
+- `skip-github` (Boolean, default: `false`) - Skip the auto creation of a new github repository.
+- `skip-semantic` (Boolean, default: `false`) - Skip the setup of semantic-release.
 
 ## Github
 
@@ -55,12 +69,6 @@ Github repository creation:
 
 - `GITHUB_TOKEN`
 - `GH_TOKEN`
-
-## CLI Options
-
-- `run-docker` (Boolean, default: `false`) - Run `docker-compose up -d` to start the application
-  after generation is complete.
-- `skip-install` (Boolean, default: `false`) - Skip installation of npm dependencies.
 
 ## Sub generators
 

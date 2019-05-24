@@ -22,6 +22,20 @@ module.exports = class extends BaseGenerator {
       this.showProjectDirectoryErr();
       process.exit(1);
     }
+
+    this.option('skipGithub', {
+      type: Boolean,
+      required: false,
+      default: false,
+      desc: 'Skip the creation of a new github repository.',
+    });
+
+    this.option('skipSemantic', {
+      type: Boolean,
+      required: false,
+      default: false,
+      desc: 'Skip the setup of semantic-release.',
+    });
   }
 
   async _askForGithubAccount(email, scopeName = null) {
@@ -113,6 +127,7 @@ module.exports = class extends BaseGenerator {
         message: 'Do you want to setup semantic release?',
         default: true,
         type: 'confirm',
+        when: !this.props.skipSemantic,
       },
     ];
 
@@ -152,7 +167,9 @@ module.exports = class extends BaseGenerator {
   }
 
   default() {
-    this._createGithubRepo();
+    if (!this.props.skipGithub) {
+      this._createGithubRepo();
+    }
 
     this.composeWith(require.resolve('../linting'), {
       projectDirectory: this.props.projectDirectory,
@@ -231,7 +248,7 @@ module.exports = class extends BaseGenerator {
     this.spawnCommandSync('git', ['commit', '-m', 'feat: initial commit'], { cwd });
 
     // semantic releast initializing
-    if (this.props.semantic) {
+    if (this.props.semantic && !this.props.skipSemantic) {
       this.log(`\n\nSetting up semantic-relase...\n`);
       this.spawnCommandSync('npx', ['semantic-release-cli', 'setup'], { cwd });
 
