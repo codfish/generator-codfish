@@ -126,7 +126,7 @@ module.exports = class extends BaseGenerator {
       filter: x => kebabCase(x).toLowerCase(),
     });
     const answers = await this.prompt(prompts);
-    const githubAccount = await this._askForGithubAccount(
+    const { githubAccount } = await this._askForGithubAccount(
       answers.authorEmail,
       moduleNameParts.scopeName,
     );
@@ -148,7 +148,7 @@ module.exports = class extends BaseGenerator {
     // - `authorName` - Git user's full name.
     // - `authorEmail` - Git user's email.
     // - `authorUrl` - Git user's website url.
-    extend(this.props, answers, moduleNameParts, githubAccount);
+    extend(this.props, answers, moduleNameParts, { githubAccount });
   }
 
   default() {
