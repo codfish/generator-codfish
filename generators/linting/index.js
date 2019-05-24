@@ -53,7 +53,7 @@ module.exports = class extends BaseGenerator {
         format: 'prettier --write "**/*.{json,css,scss,md,html}"',
         lint: 'eslint .',
         'lint:md': 'markdownlint -i node_modules -i dist .',
-        validate: 'npm run lint && npm run lint:md && npm run test',
+        validate: 'npm run lint && npm run lint:md && npm run test:ci',
       },
     };
 
