@@ -72,6 +72,12 @@ module.exports = class extends BaseGenerator {
         type: 'confirm',
       },
       {
+        name: 'runInBrowser',
+        message: 'Will this dependency run in a browser environment?',
+        default: false,
+        type: 'confirm',
+      },
+      {
         name: 'description',
         message: 'Project description?',
         when: !this.props.description,
@@ -188,6 +194,15 @@ module.exports = class extends BaseGenerator {
       repository: {
         type: 'git',
         url: `https://github.com/${this.props.githubAccount}/${this.props.localName}.git`,
+      },
+      jest: {
+        testEnvironment: this.props.runInBrowser ? 'jsdom' : 'node',
+      },
+      scripts: {
+        build: 'babel src -d dist --copy-files',
+        watch: 'babel src -d dist --copy-files --watch',
+        test: 'jest --watchAll --verbose=true --silent',
+        'test:ci': 'jest --verbose=true --silent --ci --coverage',
       },
     };
 
