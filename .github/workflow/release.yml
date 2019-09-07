@@ -1,0 +1,32 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@master
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          version: 10.x
+
+      - name: Validate
+        run: |
+          npm install --no-save
+          npm run lint
+          npm run lint:md
+          npm run test:ci
+
+      - name: Release
+        run: npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

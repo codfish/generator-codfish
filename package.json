@@ -51,8 +51,7 @@
     "fix": "npm run format && npm run lint -- --fix",
     "format": "prettier --write \"**/*.{json,css,scss,md,html}\"",
     "lint": "eslint .",
-    "lint:md": "markdownlint -i node_modules -i **/templates/*.md .",
-    "validate": "npm run lint && npm run lint:md"
+    "lint:md": "markdownlint -i node_modules -i **/templates/*.md ."
   },
   "repository": "codfish/generator-codfish",
   "license": "MIT"
