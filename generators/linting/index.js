@@ -2,8 +2,8 @@ const extend = require('lodash/merge');
 const BaseGenerator = require('../BaseGenerator');
 
 const devDependencies = [
-  '@commitlint/cli@7',
-  '@commitlint/config-conventional@7',
+  '@commitlint/cli@8',
+  '@commitlint/config-conventional@8',
   'markdownlint-cli@0',
   'cod-scripts',
 ];
