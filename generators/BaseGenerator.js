@@ -21,14 +21,12 @@ module.exports = class extends Generator {
         this.die(opts.message);
       }
     };
+  }
 
-    // allows us to catch and prevent deaths on child process errors
-    const { determineAppname } = this;
-    this.determineAppname = () => {
-      return this.props.projectDirectory === '.'
-        ? determineAppname()
-        : kebabCase(this.options.projectDirectory);
-    };
+  getAppname() {
+    return this.props.projectDirectory === '.'
+      ? this.determineAppname()
+      : kebabCase(this.options.projectDirectory);
   }
 
   /**

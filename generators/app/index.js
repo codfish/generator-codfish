@@ -15,7 +15,8 @@ module.exports = class extends BaseGenerator {
     try {
       this.argument('projectDirectory', {
         type: String,
-        required: typeof options.projectDirectory === 'undefined',
+        required: false,
+        default: '.',
         desc: 'Project directory',
       });
     } catch (err) {
@@ -73,7 +74,7 @@ module.exports = class extends BaseGenerator {
   async prompting() {
     // First, ask for the module name
     const moduleNameParts = await askForModuleName({
-      default: this.determineAppname(),
+      default: this.getAppname(),
       filter: x => kebabCase(x).toLowerCase(),
     });
 

@@ -26,12 +26,12 @@ module.exports = class extends BaseGenerator {
   }
 
   async prompting() {
-    // If this generator was called directly we need to run linting, git, docker, etc. in here.
-    // Otherwise we should return early and let the parent generator do it.
+    // If this generator was called directly we need to promt users.
+    // Otherwise it was composed with a larger generator, so we should return early.
     if (this.props.composed) return;
 
     const { localName } = await askForModuleName({
-      default: this.determineAppname(),
+      default: this.getAppname(),
       filter: x => kebabCase(x).toLowerCase(),
     });
 
@@ -44,7 +44,6 @@ module.exports = class extends BaseGenerator {
     });
 
     const isPackage = await this.askPackageVsApplication();
-    console.log(isPackage);
 
     this.props = extend(this.props, { localName, githubAccount, isPackage });
   }
