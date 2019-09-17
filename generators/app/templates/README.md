@@ -1,19 +1,18 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
-- [<%= name %>](#%25-name-%25)
-  - [The problem](#the-problem)
-  - [This solution](#this-solution)
-  - [Setup](#setup)
-  - [Usage](#usage)
-  - [Inspiration](#inspiration)
-  - [LICENSE](#license)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
 # <%= name %>
 
 > <%= description %>
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [The problem](#the-problem)
+- [This solution](#this-solution)
+- [Setup](#setup)
+- [Usage](#usage)
+- [Inspiration](#inspiration)
+- [LICENSE](#license)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## The problem
 

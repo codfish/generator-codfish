@@ -1,16 +1,14 @@
 const extend = require('lodash/merge');
 const BaseGenerator = require('../BaseGenerator');
 
-const dependencies = [
+const devDependencies = [
   '@commitlint/cli@7',
   '@commitlint/config-conventional@7',
-  'husky@1',
-  'lint-staged@8',
   'markdownlint-cli@0',
-  'eslint-config-codfish@2',
-  'prettier@1',
-  'eslint@5',
+  'cod-scripts',
 ];
+
+const dependencies = ['@babel/runtime'];
 
 module.exports = class extends BaseGenerator {
   constructor(args, options) {
@@ -26,20 +24,6 @@ module.exports = class extends BaseGenerator {
       this.showProjectDirectoryErr('linting');
       process.exit(1);
     }
-
-    this.option('docker', {
-      type: Boolean,
-      required: false,
-      default: false,
-      desc: 'Application uses Docker.',
-    });
-
-    this.option('node', {
-      type: Boolean,
-      required: false,
-      default: false,
-      desc: 'Node application.',
-    });
   }
 
   initializing() {
@@ -49,11 +33,22 @@ module.exports = class extends BaseGenerator {
   writing() {
     const pkgJson = {
       scripts: {
-        fix: 'npm run format && npm run lint -- --fix',
-        format: 'prettier --write "**/*.{json,css,scss,md,html}"',
-        lint: 'eslint .',
+        build: 'cod-scripts build',
+        'build:watch': 'npm run build -- --watch',
+        format: 'cod-scripts format',
+        lint: 'cod-scripts lint',
         'lint:md': 'markdownlint -i node_modules -i dist .',
-        validate: 'npm run lint && npm run lint:md && npm run test:ci',
+        test: 'cod-scripts test',
+        validate: 'cod-scripts validate',
+      },
+      eslintConfig: {
+        extends: ['./node_modules/cod-scripts/eslint.js'],
+      },
+      husky: {
+        hooks: {
+          'pre-commit': 'cod-scripts pre-commit',
+          'commit-msg': 'commitlint -E HUSKY_GIT_PARAMS',
+        },
       },
     };
 
@@ -64,33 +59,9 @@ module.exports = class extends BaseGenerator {
     );
 
     // copy template files
-    this.copyTpl(
-      this.templatePath('eslintrc.js'),
-      this.destinationPath(this.options.projectDirectory, '.eslintrc.js'),
-    );
-    this.copy(
-      this.templatePath('eslintignore'),
-      this.destinationPath(this.options.projectDirectory, '.eslintignore'),
-    );
-    this.copy(
-      this.templatePath('prettierrc.js'),
-      this.destinationPath(this.options.projectDirectory, '.prettierrc.js'),
-    );
-    this.copy(
-      this.templatePath('prettierignore'),
-      this.destinationPath(this.options.projectDirectory, '.prettierignore'),
-    );
     this.copy(
       this.templatePath('.commitlintrc.js'),
       this.destinationPath(this.options.projectDirectory, '.commitlintrc.js'),
-    );
-    this.copy(
-      this.templatePath('.lintstagedrc.js'),
-      this.destinationPath(this.options.projectDirectory, '.lintstagedrc.js'),
-    );
-    this.copy(
-      this.templatePath('.huskyrc.js'),
-      this.destinationPath(this.options.projectDirectory, '.huskyrc.js'),
     );
     this.copy(
       this.templatePath('.markdownlint.json'),
@@ -99,8 +70,9 @@ module.exports = class extends BaseGenerator {
   }
 
   install() {
+    this.npmInstall(dependencies, {}, { cwd: this.destinationPath(this.options.projectDirectory) });
     this.npmInstall(
-      dependencies,
+      devDependencies,
       { saveDev: true },
       { cwd: this.destinationPath(this.options.projectDirectory) },
     );
