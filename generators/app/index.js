@@ -78,18 +78,28 @@ module.exports = class extends BaseGenerator {
   }
 
   async prompting() {
+    // Is this a reusable package or an application
+    const { isPackage } = await this.prompt({
+      name: 'isPackage',
+      message: 'Is this a package (as opposed to an application)?',
+      default: true,
+      type: 'confirm',
+    });
+
     const prompts = [
       {
         name: 'devDep',
         message: 'Should people install this as one of their devDependencies?',
         default: true,
         type: 'confirm',
+        when: isPackage,
       },
       {
         name: 'runInBrowser',
         message: 'Will this dependency run in a browser environment?',
         default: false,
         type: 'confirm',
+        when: isPackage,
       },
       {
         name: 'description',
@@ -157,13 +167,14 @@ module.exports = class extends BaseGenerator {
     // - `name` - Full module name.
     // - `localName` - Full module name or local name of a scoped module. `@codfish/foo` # => 'foo'
     // - `scopeName` - Scope of a scoped module name. `@codfish/foo` # => "codfish"
+    // - `isPackage` - If this is a package and NOT an application.
     // - `description` - Module description.
     // - `homepage` - Homepage for this module.
     // - `githubAccount` - Git username or org.
     // - `authorName` - Git user's full name.
     // - `authorEmail` - Git user's email.
     // - `authorUrl` - Git user's website url.
-    extend(this.props, answers, moduleNameParts, { githubAccount });
+    extend(this.props, answers, isPackage, moduleNameParts, { githubAccount });
   }
 
   default() {
