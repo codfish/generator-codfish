@@ -213,6 +213,10 @@ module.exports = class extends BaseGenerator {
       },
     };
 
+    // prevent npm publishing for non-packages (i.e. applications).
+    // semantic-release will still run to help cut new github releases.
+    if (!this.props.isPackage) pkg.private = true;
+
     this.fs.writeJSON(this.destinationPath(this.cwd, 'package.json'), pkg);
     this.copyTpl(this.templatePath('**'), this.cwd, this.props);
   }
