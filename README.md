@@ -6,9 +6,11 @@ Ultimate goal is to get up and running as quickly as possible. This is a generat
 scaffold out new projects and npm modules. It goes further than just setting up code. It will also:
 
 - Create a new Github repo for you ([more details below](#Github))
-- Tries to setup [semantic-release](https://semantic-release.gitbook.io/semantic-release/)
 - Sets up auto-linting on commit, as well as CI/CD
 - Init's git and makes an initial commit. All you need to do is `git push origin master`.
+
+<!-- START doctoc -->
+<!-- END doctoc-->
 
 ## Installation
 
@@ -42,10 +44,6 @@ yo codfish .
 # This will skip that.
 yo codfish new-module --skip-github
 
-# By default the generator automatically tries to setup semantic-release for you.
-# This will skip that.
-yo codfish new-module --skip-semantic
-
 # To add my linting configuration & tooling to an existing project
 # you can run the linting sub generator directly. When starting a project with
 # the other generators, this will automatically be included.
@@ -57,25 +55,13 @@ yo codfish:linting .
 
 - `skip-install` (Boolean, default: `false`) - Skip installation of npm dependencies.
 - `skip-github` (Boolean, default: `false`) - Skip the auto creation of a new github repository.
-- `skip-semantic` (Boolean, default: `false`) - Skip the setup of semantic-release.
-
-## Github
-
-This generator will attempt to set up a new Github repo & `semantic-release` for you out of the box.
-You will be prompted to enter credentials, that's to be expected.
-
-If you have any of the following environment variables set, it will attempt to use them instead for
-Github repository creation:
-
-- `GITHUB_TOKEN`
-- `GH_TOKEN`
 
 ## Sub generators
 
 Remember you can see the options of each sub generators by running `yo codfish:sub --help`.
 
 - `codfish:linting` - Linting config & tooling for JS, Markdown, CSS, JSON, Git commits, etc.
-- `codfish:github` - Adds node `.gitignore` and GitHub Actions workflows.
+- `codfish:github` - Adds node `.gitignore`, GitHub Actions workflows & GitHub templates.
 
 ## Advanced Examples
 

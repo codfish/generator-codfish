@@ -29,13 +29,6 @@ module.exports = class extends BaseGenerator {
       default: false,
       desc: 'Skip the creation of a new github repository.',
     });
-
-    this.option('skipSemantic', {
-      type: Boolean,
-      required: false,
-      default: false,
-      desc: 'Skip the setup of semantic-release.',
-    });
   }
 
   async _askForGithubAccount(email, scopeName = null) {
@@ -131,13 +124,6 @@ module.exports = class extends BaseGenerator {
         default: 'https://codfish.io',
         when: !this.props.authorUrl,
         store: true,
-      },
-      {
-        name: 'semantic',
-        message: 'Do you want to setup semantic release?',
-        default: true,
-        type: 'confirm',
-        when: !this.props.skipSemantic,
       },
     ];
 
@@ -251,14 +237,5 @@ module.exports = class extends BaseGenerator {
     // add and make initial commit
     this.spawnCommandSync('git', ['add', '.'], { cwd });
     this.spawnCommandSync('git', ['commit', '-m', 'feat: initial commit'], { cwd });
-
-    // semantic releast initializing
-    if (this.props.semantic && !this.props.skipSemantic) {
-      this.log(`\n\nSetting up semantic-relase...\n`);
-      this.spawnCommandSync('npx', ['semantic-release-cli', 'setup'], { cwd });
-
-      // cleanup after semantic-release-cli
-      this.spawnCommandSync('git', ['reset', '--hard', 'HEAD'], { cwd });
-    }
   }
 };
