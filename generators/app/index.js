@@ -162,7 +162,7 @@ module.exports = class extends BaseGenerator {
     }
 
     this.composeWith(require.resolve('../linting'), this.props);
-    this.composeWith(require.resolve('../github'), this.props);
+    this.composeWith(require.resolve('../github'), extend({}, this.props, { composed: true }));
     this.composeWith(require.resolve('generator-license'), {
       name: this.props.authorName,
       email: this.props.authorEmail,
