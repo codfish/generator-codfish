@@ -206,12 +206,6 @@ module.exports = class extends BaseGenerator {
       jest: {
         testEnvironment: this.props.runInBrowser ? 'jsdom' : 'node',
       },
-      scripts: {
-        build: 'babel src -d dist --copy-files',
-        watch: 'babel src -d dist --copy-files --watch',
-        test: 'jest --watchAll --verbose=true --silent',
-        'test:ci': 'jest --verbose=true --silent --ci --coverage',
-      },
     };
 
     // prevent npm publishing for non-packages (i.e. applications).
