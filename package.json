@@ -47,7 +47,7 @@
   "scripts": {
     "format": "cod-scripts format",
     "lint": "cod-scripts lint",
-    "lint:md": "markdownlint -i node_modules -i dist .",
+    "lint:md": "markdownlint -i node_modules -i dist -i **/templates/*.md .",
     "validate": "cod-scripts validate"
   },
   "eslintConfig": {
