@@ -23,10 +23,9 @@ npm install -g yo generator-codfish
 
 ## Usage
 
-Generate your new project: `yo codfish[:<sub>] <project-directory> [<options>]`
+Generate your new project: `yo codfish[:<sub>] [<project-directory>] [<options>]`
 
-- **project-directory** - Required directory to generate into. `.` can be used for the current
-  directory.
+- **project-directory** - Directory to generate into. The current directory will be used by default.
 - **sub** - Optional sub generator.
 - **options** - Optional flags to pass to the generator to change functionality. See below for more
   details.
