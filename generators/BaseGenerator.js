@@ -104,7 +104,7 @@ module.exports = class extends Generator {
    */
   showCompletionMessage() {
     const gitRepo = `${this.props.githubAccount}/${this.props.localName}`;
-    const travisUrl = `https://travis-ci.org/profile/${this.props.githubAccount}`;
+    const secretsUrl = `https://github.com/${this.props.gitRepo}/settings/secrets`;
 
     this.log();
     this.log(
@@ -112,8 +112,16 @@ module.exports = class extends Generator {
         `Success! The project was generated in ${chalk.green(`${this.props.projectDirectory}`)}.`,
       ),
     );
-    this.log();
-    this.log(chalk.cyan(`Enable Travis integration at ${chalk.green(travisUrl)}`));
+    if (this.props.isPackage) {
+      this.log();
+      this.log(
+        chalk.cyan(
+          `In order to deploy your package to npm, you need to add an NPM_TOKEN secret in GitHub: ${chalk.green(
+            secretsUrl,
+          )}`,
+        ),
+      );
+    }
     this.log();
     this.log(
       chalk.cyan(
