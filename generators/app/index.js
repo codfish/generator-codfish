@@ -5,7 +5,7 @@ const BaseGenerator = require('../BaseGenerator');
 const { askForModuleName } = require('../utils');
 
 const dependencies = [];
-const devDependencies = ['@babel/cli@7', '@babel/core@7', '@babel/preset-env@7', 'jest@^24'];
+const devDependencies = [];
 
 module.exports = class extends BaseGenerator {
   constructor(args, options) {
