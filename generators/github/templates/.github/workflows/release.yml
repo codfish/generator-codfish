@@ -1,0 +1,59 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@master
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - name: validate before release
+        run: |
+          npm <% if (isPackage) { %>install<% } else { %>ci<% } %> --no-save
+          npm run build
+          npm run lint
+          npm run lint:md
+          npm run test
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          CI: true
+<% if (!isPackage) { %>
+      - name: docker login
+        run: echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: docker build
+        run: docker build -t <%= githubAccount %>/<%= name %>:latest .
+
+      - name: docker push latest
+        run: docker push <%= githubAccount %>/<%= name %>:latest
+<% } %>
+      - name: semantic release
+        uses: codfish/semantic-release-action@v1
+        id: semantic
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+<% if (!isPackage) { %>
+      - name: docker push versions
+        if: steps.semantic.outputs.new-release-published == 'true'
+        run: |
+          docker tag <%= githubAccount %>/<%= name %> <%= githubAccount %>/<%= name %>:$VERSION_TAG
+          docker tag <%= githubAccount %>/<%= name %> <%= githubAccount %>/<%= name %>:$MAJOR_TAG
+          docker push <%= githubAccount %>/<%= name %>:$VERSION_TAG
+          docker push <%= githubAccount %>/<%= name %>:$MAJOR_TAG
+        env:
+          VERSION_TAG: v${{ steps.semantic.outputs.release-version }}
+          MAJOR_TAG: v${{ steps.semantic.outputs.release-major }}
+<% } %>

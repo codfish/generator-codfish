@@ -78,18 +78,28 @@ module.exports = class extends BaseGenerator {
   }
 
   async prompting() {
+    // Is this a reusable package or an application
+    const { isPackage } = await this.prompt({
+      name: 'isPackage',
+      message: 'Is this a package (as opposed to an application)?',
+      default: true,
+      type: 'confirm',
+    });
+
     const prompts = [
       {
         name: 'devDep',
         message: 'Should people install this as one of their devDependencies?',
         default: true,
         type: 'confirm',
+        when: isPackage,
       },
       {
         name: 'runInBrowser',
         message: 'Will this dependency run in a browser environment?',
         default: false,
         type: 'confirm',
+        when: isPackage,
       },
       {
         name: 'description',
@@ -157,13 +167,14 @@ module.exports = class extends BaseGenerator {
     // - `name` - Full module name.
     // - `localName` - Full module name or local name of a scoped module. `@codfish/foo` # => 'foo'
     // - `scopeName` - Scope of a scoped module name. `@codfish/foo` # => "codfish"
+    // - `isPackage` - If this is a package and NOT an application.
     // - `description` - Module description.
     // - `homepage` - Homepage for this module.
     // - `githubAccount` - Git username or org.
     // - `authorName` - Git user's full name.
     // - `authorEmail` - Git user's email.
     // - `authorUrl` - Git user's website url.
-    extend(this.props, answers, moduleNameParts, { githubAccount });
+    extend(this.props, answers, moduleNameParts, { isPackage, githubAccount });
   }
 
   default() {
@@ -171,10 +182,8 @@ module.exports = class extends BaseGenerator {
       this._createGithubRepo();
     }
 
-    this.composeWith(require.resolve('../linting'), {
-      projectDirectory: this.props.projectDirectory,
-    });
-
+    this.composeWith(require.resolve('../linting'), this.props);
+    this.composeWith(require.resolve('../github'), this.props);
     this.composeWith(require.resolve('generator-license'), {
       name: this.props.authorName,
       email: this.props.authorEmail,
@@ -206,7 +215,9 @@ module.exports = class extends BaseGenerator {
       license: 'MIT',
       devDependencies: {},
       engines: {
-        npm: '>= 4.0.0',
+        node: '>=10',
+        npm: '>=6',
+        yarn: '>=1',
       },
       repository: {
         type: 'git',
@@ -224,13 +235,7 @@ module.exports = class extends BaseGenerator {
     };
 
     this.fs.writeJSON(this.destinationPath(this.cwd, 'package.json'), pkg);
-
     this.copyTpl(this.templatePath('**'), this.cwd, this.props);
-
-    this.mv(
-      this.destinationPath(this.cwd, 'gitignore'),
-      this.destinationPath(this.cwd, '.gitignore'),
-    );
   }
 
   end() {
