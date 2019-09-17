@@ -75,6 +75,7 @@ Github repository creation:
 Remember you can see the options of each sub generators by running `yo codfish:sub --help`.
 
 - `codfish:linting` - Linting config & tooling for JS, Markdown, CSS, JSON, Git commits, etc.
+- `codfish:github` - Adds node `.gitignore` and GitHub Actions workflows.
 
 ## Advanced Examples
 
@@ -88,6 +89,9 @@ yo codfish my-custom-dir
 yo codfish:linting .
 yo codfish:linting . --docker # with docker support
 yo codfish:linting . --node # for a node application
+
+# add github actions to an existing project
+yo codfish:github .
 ```
 
 ## Getting To Know Yeoman
@@ -99,7 +103,5 @@ yo codfish:linting . --node # for a node application
 
 [npm-image]: https://badge.fury.io/js/generator-codfish.svg
 [npm-url]: https://npmjs.org/package/generator-codfish
-[travis-image]: https://travis-ci.org/codfish/generator-codfish.svg?branch=master
-[travis-url]: https://travis-ci.org/codfish/generator-codfish
 [daviddm-image]: https://david-dm.org/codfish/generator-codfish.svg?theme=shields.io
 [daviddm-url]: https://david-dm.org/codfish/generator-codfish

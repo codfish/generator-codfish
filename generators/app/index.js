@@ -174,7 +174,7 @@ module.exports = class extends BaseGenerator {
     // - `authorName` - Git user's full name.
     // - `authorEmail` - Git user's email.
     // - `authorUrl` - Git user's website url.
-    extend(this.props, answers, isPackage, moduleNameParts, { githubAccount });
+    extend(this.props, answers, moduleNameParts, { isPackage, githubAccount });
   }
 
   default() {
@@ -182,10 +182,8 @@ module.exports = class extends BaseGenerator {
       this._createGithubRepo();
     }
 
-    this.composeWith(require.resolve('../linting'), {
-      projectDirectory: this.props.projectDirectory,
-    });
-
+    this.composeWith(require.resolve('../linting'), this.props);
+    this.composeWith(require.resolve('../github'), this.props);
     this.composeWith(require.resolve('generator-license'), {
       name: this.props.authorName,
       email: this.props.authorEmail,
@@ -217,7 +215,9 @@ module.exports = class extends BaseGenerator {
       license: 'MIT',
       devDependencies: {},
       engines: {
-        npm: '>= 4.0.0',
+        node: '>=10',
+        npm: '>=6',
+        yarn: '>=1',
       },
       repository: {
         type: 'git',
@@ -235,13 +235,7 @@ module.exports = class extends BaseGenerator {
     };
 
     this.fs.writeJSON(this.destinationPath(this.cwd, 'package.json'), pkg);
-
     this.copyTpl(this.templatePath('**'), this.cwd, this.props);
-
-    this.mv(
-      this.destinationPath(this.cwd, 'gitignore'),
-      this.destinationPath(this.cwd, '.gitignore'),
-    );
   }
 
   end() {

@@ -1,0 +1,31 @@
+name: Validate Code
+
+on: push
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@master
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+
+      - name: install dependencies
+        run: npm <% if (isPackage) { %>install<% } else { %>ci<% } %> --no-save
+
+      - name: lint js
+        run: npm run lint
+
+      - name: lint markdown
+        run: npm run lint:md
+
+      - name: build
+        run: npm run build
+          CI: true
+
+      - name: run tests
+        run: npm run test
+          CI: true
