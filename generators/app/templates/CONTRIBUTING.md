@@ -15,7 +15,7 @@ to an Open Source Project on GitHub][egghead]
 > branches on your fork. To do this, run:
 >
 > ```sh
-> git remote add upstream https://github.com/<%= githubAccount %>/<%= name %>.git
+> git remote add upstream https://github.com/<%= githubAccount %>/<%= localName %>.git
 > git fetch upstream
 > git branch --set-upstream-to=upstream/master master
 > ```
@@ -32,4 +32,4 @@ Please checkout the [the open issues][issues].
 
 Also, please watch the repo and respond to questions/bug reports/feature requests! Thanks!
 
-[issues]: https://github.com/<%= githubAccount %>/<%= name %>/issues
+[issues]: https://github.com/<%= githubAccount %>/<%= localName %>/issues

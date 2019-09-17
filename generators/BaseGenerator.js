@@ -1,6 +1,7 @@
 const fs = require('fs');
 const chalk = require('chalk');
 const Generator = require('yeoman-generator');
+const kebabCase = require('lodash/kebabCase');
 
 /**
  * Base generator that should be extended from by all of our sub generators. This
@@ -19,6 +20,14 @@ module.exports = class extends Generator {
       if (childProcess.status !== 0 && opts.dieOnError) {
         this.die(opts.message);
       }
+    };
+
+    // allows us to catch and prevent deaths on child process errors
+    const { determineAppname } = this;
+    this.determineAppname = () => {
+      return this.props.projectDirectory === '.'
+        ? determineAppname()
+        : kebabCase(this.options.projectDirectory);
     };
   }
 
@@ -76,6 +85,26 @@ module.exports = class extends Generator {
         message: 'Encountered an issue initiating this as a git repository',
       });
     }
+  }
+
+  /**
+   * Prompt the user for the module name.
+   *
+   * @see {@link https://github.com/SBoudrias/inquirer-npm-name}
+   * @see {@link https://github.com/SBoudrias/Inquirer.js#question}
+   *
+   * @param {object|string} - An Inquirer prompt configuration or just a string to serve as name.
+   * @return {object} - Module name parts, including `name`, `localName` and possibly `scopeName`.
+   */
+  async askPackageVsApplication() {
+    const { isPackage } = await this.prompt({
+      name: 'isPackage',
+      message: 'Is this a package (as opposed to an application)?',
+      default: true,
+      type: 'confirm',
+    });
+
+    return isPackage;
   }
 
   /**

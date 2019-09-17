@@ -71,13 +71,14 @@ module.exports = class extends BaseGenerator {
   }
 
   async prompting() {
-    // Is this a reusable package or an application
-    const { isPackage } = await this.prompt({
-      name: 'isPackage',
-      message: 'Is this a package (as opposed to an application)?',
-      default: true,
-      type: 'confirm',
+    // First, ask for the module name
+    const moduleNameParts = await askForModuleName({
+      default: this.determineAppname(),
+      filter: x => kebabCase(x).toLowerCase(),
     });
+
+    // Is this a reusable package or an application
+    const isPackage = await this.askPackageVsApplication();
 
     const prompts = [
       {
@@ -126,17 +127,9 @@ module.exports = class extends BaseGenerator {
         store: true,
       },
     ];
-
-    // First, get module name
-    const defaultModuleName =
-      this.props.projectDirectory === '.'
-        ? this.determineAppname()
-        : kebabCase(this.options.projectDirectory);
-    const moduleNameParts = await askForModuleName({
-      default: defaultModuleName,
-      filter: x => kebabCase(x).toLowerCase(),
-    });
     const answers = await this.prompt(prompts);
+
+    // Then ask for github account
     const { githubAccount } = await this._askForGithubAccount(
       answers.authorEmail,
       moduleNameParts.scopeName,
@@ -150,7 +143,7 @@ module.exports = class extends BaseGenerator {
     // Merging all of the following into `this.props` for easy access throughout the generator.
     // NOTE: We'll have access to these variables in templates as well.
     //
-    // - `name` - Full module name.
+    // - `name` - Full module name. `@codfish/foo` or `cod-scripts`
     // - `localName` - Full module name or local name of a scoped module. `@codfish/foo` # => 'foo'
     // - `scopeName` - Scope of a scoped module name. `@codfish/foo` # => "codfish"
     // - `isPackage` - If this is a package and NOT an application.

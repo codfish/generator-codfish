@@ -2,7 +2,7 @@
 
 <!-- Please link to the github issue here. -->
 
-https://github.com/<%= githubAccount %>/<%= name %>/issues/**NUMBER**
+https://github.com/<%= githubAccount %>/<%= localName %>/issues/**NUMBER**
 
 ### Description
 

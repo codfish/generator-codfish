@@ -34,10 +34,10 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: docker build
-        run: docker build -t <%= githubAccount %>/<%= name %>:latest .
+        run: docker build -t <%= githubAccount %>/<%= localName %>:latest .
 
       - name: docker push latest
-        run: docker push <%= githubAccount %>/<%= name %>:latest
+        run: docker push <%= githubAccount %>/<%= localName %>:latest
 <% } %>
       - name: semantic release
         uses: codfish/semantic-release-action@v1
@@ -49,10 +49,10 @@ jobs:
       - name: docker push versions
         if: steps.semantic.outputs.new-release-published == 'true'
         run: |
-          docker tag <%= githubAccount %>/<%= name %> <%= githubAccount %>/<%= name %>:$VERSION_TAG
-          docker tag <%= githubAccount %>/<%= name %> <%= githubAccount %>/<%= name %>:$MAJOR_TAG
-          docker push <%= githubAccount %>/<%= name %>:$VERSION_TAG
-          docker push <%= githubAccount %>/<%= name %>:$MAJOR_TAG
+          docker tag <%= githubAccount %>/<%= localName %> <%= githubAccount %>/<%= localName %>:$VERSION_TAG
+          docker tag <%= githubAccount %>/<%= localName %> <%= githubAccount %>/<%= localName %>:$MAJOR_TAG
+          docker push <%= githubAccount %>/<%= localName %>:$VERSION_TAG
+          docker push <%= githubAccount %>/<%= localName %>:$MAJOR_TAG
         env:
           VERSION_TAG: v${{ steps.semantic.outputs.release-version }}
           MAJOR_TAG: v${{ steps.semantic.outputs.release-major }}
