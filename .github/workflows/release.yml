@@ -20,7 +20,6 @@ jobs:
         run: |
           npm install --no-save
           npm run lint
-          npm run lint:md
           npm run format
           npm run test
         env:
