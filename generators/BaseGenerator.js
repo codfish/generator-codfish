@@ -131,7 +131,7 @@ module.exports = class extends Generator {
    */
   showCompletionMessage() {
     const gitRepo = `${this.props.githubAccount}/${this.props.localName}`;
-    const secretsUrl = `https://github.com/${this.props.gitRepo}/settings/secrets`;
+    const secretsUrl = `https://github.com/${gitRepo}/settings/secrets`;
 
     this.log();
     this.log(

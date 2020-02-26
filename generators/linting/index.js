@@ -1,12 +1,7 @@
 const extend = require('lodash/merge');
 const BaseGenerator = require('../BaseGenerator');
 
-const devDependencies = [
-  '@commitlint/cli@8',
-  '@commitlint/config-conventional@8',
-  'markdownlint-cli@0',
-  'cod-scripts',
-];
+const devDependencies = ['cod-scripts'];
 
 const dependencies = ['@babel/runtime'];
 
@@ -37,9 +32,8 @@ module.exports = class extends BaseGenerator {
         'build:watch': 'npm run build -- --watch',
         format: 'cod-scripts format',
         lint: 'cod-scripts lint',
-        'lint:md': 'markdownlint -i node_modules -i dist .',
+        'lint:commit': 'cod-scripts commitlint',
         test: 'cod-scripts test',
-        validate: 'cod-scripts validate',
       },
       eslintConfig: {
         extends: ['./node_modules/cod-scripts/eslint.js'],
@@ -56,16 +50,6 @@ module.exports = class extends BaseGenerator {
     this.fs.extendJSON(
       this.destinationPath(this.options.projectDirectory, 'package.json'),
       pkgJson,
-    );
-
-    // copy template files
-    this.copy(
-      this.templatePath('.commitlintrc.js'),
-      this.destinationPath(this.options.projectDirectory, '.commitlintrc.js'),
-    );
-    this.copy(
-      this.templatePath('.markdownlint.json'),
-      this.destinationPath(this.options.projectDirectory, '.markdownlint.json'),
     );
   }
 
