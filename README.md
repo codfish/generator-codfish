@@ -72,8 +72,6 @@ yo codfish my-custom-dir
 
 # add linting to an existing project
 yo codfish:linting .
-yo codfish:linting . --docker # with docker support
-yo codfish:linting . --node # for a node application
 
 # add github actions to an existing project
 yo codfish:github .

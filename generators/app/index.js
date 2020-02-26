@@ -223,11 +223,16 @@ module.exports = class extends BaseGenerator {
     const repo = `git@github.com:${this.props.githubAccount}/${this.props.localName}.git`;
     const cwd = this.props.projectDirectory;
 
+    // last minute code formatting before commit
+    this.spawnCommandSync('npm', ['run', 'format'], { cwd });
+
     // add the repo url as the `origin` remote
     this.spawnCommandSync('git', ['remote', 'add', 'origin', repo], { cwd });
 
     // add and make initial commit
+    // --no-verify is required because latest version of lint-staged requires
+    // a commit before running. http://bit.ly/2viAmQM
     this.spawnCommandSync('git', ['add', '.'], { cwd });
-    this.spawnCommandSync('git', ['commit', '-m', 'feat: initial commit'], { cwd });
+    this.spawnCommandSync('git', ['commit', '--no-verify', '-m', 'feat: initial commit'], { cwd });
   }
 };

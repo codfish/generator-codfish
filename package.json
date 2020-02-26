@@ -22,8 +22,6 @@
     "express api"
   ],
   "devDependencies": {
-    "@commitlint/cli": "^8.3.5",
-    "@commitlint/config-conventional": "^8.3.4",
     "cod-scripts": "^4.0.1",
     "jest": "^25.1.0",
     "yeoman-assert": "^3.1.0",
