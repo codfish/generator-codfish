@@ -84,7 +84,7 @@ module.exports = class extends BaseGenerator {
     const prompts = [
       {
         name: 'devDep',
-        message: 'Should people install this as one of their devDependencies?',
+        message: 'Should peopled install this as one of their devDependencies?',
         default: true,
         type: 'confirm',
         when: isPackage,
@@ -218,7 +218,7 @@ module.exports = class extends BaseGenerator {
 
   end() {
     this.on('end', () => this.showCompletionMessage());
-    this.on('end', this.deleteRcFile);
+    this.deleteRcFile();
 
     const repo = `git@github.com:${this.props.githubAccount}/${this.props.localName}.git`;
     const cwd = this.props.projectDirectory;
