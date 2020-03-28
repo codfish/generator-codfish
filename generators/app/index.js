@@ -2,7 +2,7 @@ const extend = require('lodash/merge');
 const kebabCase = require('lodash/kebabCase');
 const githubUsername = require('github-username');
 const BaseGenerator = require('../BaseGenerator');
-const { askForModuleName } = require('../utils');
+const { askForModuleName, getModuleNameParts } = require('../utils');
 
 const dependencies = [];
 const devDependencies = [];
@@ -50,6 +50,8 @@ module.exports = class extends BaseGenerator {
    * Create new github repository.
    */
   _createGithubRepo() {
+    if (!this.props.createRepo) return;
+
     try {
       this.spawnCommandSync('sh', [
         require.resolve('../../bin/create-repo.sh'),
@@ -64,30 +66,53 @@ module.exports = class extends BaseGenerator {
   }
 
   initializing() {
-    this.props = extend({}, this.props, this.options, { new: true });
-    this.cwd = this.destinationPath(this.props.projectDirectory);
+    // set destination directory
+    this.cwd = this.destinationPath(this.options.projectDirectory);
+
+    // read current package.json
+    this.pkg = this.fs.readJSON(this.destinationPath(this.cwd, 'package.json'), { exists: false });
+
+    // Set the default props from the existing package.json, options & set
+    // `new` property to denote whether we're generating into a new directory
+    this.props = extend(
+      {
+        name: this.pkg.name,
+        description: this.pkg.description,
+        authorName: typeof this.pkg.author === 'object' && this.pkg.author.name,
+        authorEmail: typeof this.pkg.author === 'object' && this.pkg.author.email,
+        authorUrl: typeof this.pkg.author === 'object' && this.pkg.author.url,
+        homepage: this.pkg.homepage,
+        devDep: false,
+      },
+      this.options,
+      { new: this.pkg.exists !== false },
+    );
 
     // initialize git repo
     this.initGitRepo(this.options.projectDirectory);
   }
 
   async prompting() {
-    // First, ask for the module name
-    const moduleNameParts = await askForModuleName({
-      default: this.getAppname(),
-      filter: x => kebabCase(x).toLowerCase(),
-    });
+    // First, get the module name
+    const moduleNameParts = this.props.new
+      ? await askForModuleName({
+          default: this.getAppname(),
+          filter: x => kebabCase(x).toLowerCase(),
+        })
+      : getModuleNameParts(this.props.name);
 
     // Is this a reusable package or an application
-    const isPackage = await this.askPackageVsApplication();
+    const isPackage = this.props.new
+      ? await this.askPackageVsApplication()
+      : this.pkg.private !== true;
 
     const prompts = [
       {
         name: 'devDep',
-        message: 'Should peopled install this as one of their devDependencies?',
-        default: true,
+        message: 'Should people install this as one of their devDependencies?',
+        default: false,
         type: 'confirm',
-        when: isPackage,
+        when: this.props.new && isPackage,
       },
       {
         name: 'description',
@@ -102,14 +127,14 @@ module.exports = class extends BaseGenerator {
       {
         name: 'authorName',
         message: "Author's Name",
-        when: !this.props.authorName,
+        when: !this.props.authorName && !this.pkg.author,
         default: this.user.git.name(),
         store: true,
       },
       {
         name: 'authorEmail',
         message: "Author's Email",
-        when: !this.props.authorEmail,
+        when: !this.props.authorEmail && !this.pkg.author,
         default: this.user.git.email(),
         store: true,
       },
@@ -117,15 +142,22 @@ module.exports = class extends BaseGenerator {
         name: 'authorUrl',
         message: "Author's Homepage",
         default: 'https://codfish.io',
-        when: !this.props.authorUrl,
+        when: !this.props.authorUrl && !this.props.author,
         store: true,
+      },
+      {
+        name: 'createRepo',
+        message: 'Create a repository for you in GitHub?',
+        when: this.props.new,
+        default: false,
+        type: 'confirm',
       },
     ];
     const answers = await this.prompt(prompts);
 
     // Then ask for github account
     const { githubAccount } = await this._askForGithubAccount(
-      answers.authorEmail,
+      answers.authorEmail || this.props.authorEmail,
       moduleNameParts.scopeName,
     );
 
@@ -196,11 +228,14 @@ module.exports = class extends BaseGenerator {
         type: 'git',
         url: `https://github.com/${this.props.githubAccount}/${this.props.localName}.git`,
       },
+      ...this.pkg,
     };
 
     // prevent npm publishing for non-packages (i.e. applications).
     // semantic-release will still run to help cut new github releases.
-    if (!this.props.isPackage) pkg.private = true;
+    if (!this.props.isPackage) {
+      pkg.private = true;
+    }
 
     this.fs.writeJSON(this.destinationPath(this.cwd, 'package.json'), pkg);
     this.copyTpl(this.templatePath('**'), this.cwd, this.props);

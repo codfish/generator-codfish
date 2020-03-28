@@ -67,4 +67,4 @@ const askForModuleName = async prompt => {
   return getModuleNameParts(answer.name);
 };
 
-module.exports = { askForModuleName };
+module.exports = { askForModuleName, getModuleNameParts };

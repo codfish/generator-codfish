@@ -14,8 +14,14 @@ scaffold out new projects and npm modules. It goes further than just setting up 
 
 ## Installation
 
-First, install [Yeoman](http://yeoman.io) and generator-codfish using [npm](https://www.npmjs.com/)
-(we assume you have pre-installed [node.js](https://nodejs.org/)).
+I recommend using `npx` so you don't need to keep your global install up to date.
+
+```sh
+npx -p yo -p generator-codfish -c 'yo codfish app-directory'
+```
+
+Or you can go the old school way and install [Yeoman](http://yeoman.io) and `generator-codfish`
+using [npm](https://www.npmjs.com/).
 
 ```sh
 npm install -g yo generator-codfish
@@ -23,7 +29,17 @@ npm install -g yo generator-codfish
 
 ## Usage
 
-Generate your new project: `yo codfish[:<sub>] [<project-directory>] [<options>]`
+Generate your new project:
+
+```sh
+npx -p yo -p generator-codfish -c 'yo codfish[:<sub>] [<project-directory>] [<options>]'
+```
+
+or
+
+```sh
+yo codfish[:<sub>] [<project-directory>] [<options>]
+```
 
 - **project-directory** - Directory to generate into. The current directory will be used by default.
 - **sub** - Optional sub generator.
@@ -34,20 +50,20 @@ Generate your new project: `yo codfish[:<sub>] [<project-directory>] [<options>]
 
 ```sh
 # Scaffold a new project into a directory named `new-module`.
-yo codfish new-module
+npx -p yo -p generator-codfish -c 'yo codfish new-module'
 
 # Scaffold a new project into the current directory.
-yo codfish .
+npx -p yo -p generator-codfish -c 'yo codfish .'
 
 # By default the generator automatically tries to create a github repository for you.
 # This will skip that.
-yo codfish new-module --skip-github
+npx -p yo -p generator-codfish -c 'yo codfish new-module --skip-github'
 
 # To add my linting configuration & tooling to an existing project
 # you can run the linting sub generator directly. When starting a project with
 # the other generators, this will automatically be included.
 cd /path/to/project-directory
-yo codfish:linting .
+npx -p yo -p generator-codfish -c 'yo codfish:linting .'
 ```
 
 ## CLI Options
@@ -68,13 +84,13 @@ Running sub-generators, passing options, etc.
 
 ```sh
 # generate a project
-yo codfish my-custom-dir
+npx -p yo -p generator-codfish -c 'yo codfish my-custom-dir'
 
 # add linting to an existing project
-yo codfish:linting .
+npx -p yo -p generator-codfish -c 'yo codfish:linting .'
 
 # add github actions to an existing project
-yo codfish:github .
+npx -p yo -p generator-codfish -c 'yo codfish:github .'
 ```
 
 ## Getting To Know Yeoman
