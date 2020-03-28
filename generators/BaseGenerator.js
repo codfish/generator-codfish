@@ -69,20 +69,20 @@ module.exports = class extends Generator {
    */
   initGitRepo(directory) {
     if (fs.existsSync(this.destinationPath(directory, '.git'))) {
-      this.props.new = false;
-    } else {
-      // otherwise initialize a git repo. need to make sure directory exists first
-      this.spawnCommandSync('mkdir', ['-p', this.destinationPath(directory)], {
-        dieOnError: true,
-        message: `Error: could not create directory ${this.destinationPath(directory)}`,
-      });
-
-      this.spawnCommandSync('git', ['init', '--quiet'], {
-        cwd: this.destinationPath(directory),
-        dieOnError: true,
-        message: 'Encountered an issue initiating this as a git repository',
-      });
+      return;
     }
+
+    // otherwise initialize a git repo. need to make sure directory exists first
+    this.spawnCommandSync('mkdir', ['-p', this.destinationPath(directory)], {
+      dieOnError: true,
+      message: `Error: could not create directory ${this.destinationPath(directory)}`,
+    });
+
+    this.spawnCommandSync('git', ['init', '--quiet'], {
+      cwd: this.destinationPath(directory),
+      dieOnError: true,
+      message: 'Encountered an issue initiating this as a git repository',
+    });
   }
 
   /**
@@ -194,6 +194,6 @@ module.exports = class extends Generator {
    * @see {@link https://yeoman.io/authoring/#finding-the-project-root}
    */
   deleteRcFile() {
-    this.spawnCommandSync('rm', [this.destinationPath('.yo-rc.json')]);
+    this.spawnCommandSync('rm', [this.destinationPath('.yo-rc.json'), '.yo-rc.json']);
   }
 };
