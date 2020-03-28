@@ -82,7 +82,7 @@ module.exports = class extends BaseGenerator {
         authorEmail: typeof this.pkg.author === 'object' && this.pkg.author.email,
         authorUrl: typeof this.pkg.author === 'object' && this.pkg.author.url,
         homepage: this.pkg.homepage,
-        devDep: true,
+        devDep: false,
       },
       this.options,
       { new: this.pkg.exists !== false },
@@ -110,7 +110,7 @@ module.exports = class extends BaseGenerator {
       {
         name: 'devDep',
         message: 'Should people install this as one of their devDependencies?',
-        default: true,
+        default: false,
         type: 'confirm',
         when: this.props.new && isPackage,
       },
