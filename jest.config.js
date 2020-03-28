@@ -1,5 +1,5 @@
 const { jest: jestConfig } = require('cod-scripts/config');
 
 module.exports = Object.assign(jestConfig, {
-  roots: ['.'],
+  roots: ['./generators'],
 });
