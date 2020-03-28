@@ -50,6 +50,8 @@ module.exports = class extends BaseGenerator {
    * Create new github repository.
    */
   _createGithubRepo() {
+    if (!this.props.createRepo) return;
+
     try {
       this.spawnCommandSync('sh', [
         require.resolve('../../bin/create-repo.sh'),
@@ -142,6 +144,13 @@ module.exports = class extends BaseGenerator {
         default: 'https://codfish.io',
         when: !this.props.authorUrl && !this.props.author,
         store: true,
+      },
+      {
+        name: 'createRepo',
+        message: 'Create a repository for you in GitHub?',
+        when: this.props.new,
+        default: false,
+        type: 'confirm',
       },
     ];
     const answers = await this.prompt(prompts);
