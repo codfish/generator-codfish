@@ -133,6 +133,17 @@ module.exports = class extends Generator {
     const gitRepo = `${this.props.githubAccount}/${this.props.localName}`;
     const secretsUrl = `https://github.com/${gitRepo}/settings/secrets`;
 
+    if (!this.props.new) {
+      this.log();
+      this.log(
+        chalk.cyan(
+          `Success! The project was updated in ${chalk.green(`${this.props.projectDirectory}`)}.`,
+        ),
+      );
+
+      return;
+    }
+
     this.log();
     this.log(
       chalk.cyan(
