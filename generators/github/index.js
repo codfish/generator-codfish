@@ -26,26 +26,40 @@ module.exports = class extends BaseGenerator {
   }
 
   async prompting() {
+    const username = this.props.githubAccount || (await githubUsername(this.user.git.email()));
+
+    const prompts = [
+      {
+        name: 'pushToDocker',
+        message: 'Pushing to Docker Hub?',
+        default: false,
+        type: 'confirm',
+      },
+      {
+        name: 'dockerId',
+        message: 'Docker username or organization',
+        default: username,
+        when: ({ pushToDocker }) => pushToDocker,
+      },
+    ];
+
+    const { pushToDocker, dockerId } = await this.prompt(prompts);
+    extend(this.props, { pushToDocker, dockerId });
+
     // If this generator was called directly we need to promt users.
     // Otherwise it was composed with a larger generator, so we should return early.
     if (this.props.composed) return;
 
-    const { localName } = await askForModuleName({
-      default: this.getAppname(),
-      filter: x => kebabCase(x).toLowerCase(),
-    });
+    const pkg = this.fs.readJSON(this.destinationPath(this.cwd, 'package.json'));
 
-    const username = await githubUsername(this.user.git.email());
+    const { localName } = pkg.name
+      ? { localName: pkg.name }
+      : await askForModuleName({
+          default: this.getAppname(),
+          filter: x => kebabCase(x).toLowerCase(),
+        });
 
-    const { githubAccount } = await this.prompt({
-      name: 'githubAccount',
-      message: 'GitHub username or organization',
-      default: username,
-    });
-
-    const isPackage = await this.askPackageVsApplication();
-
-    this.props = extend(this.props, { localName, githubAccount, isPackage });
+    extend(this.props, { localName });
   }
 
   writing() {

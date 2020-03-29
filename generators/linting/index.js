@@ -23,6 +23,7 @@ module.exports = class extends BaseGenerator {
 
   initializing() {
     this.props = extend(this.props, this.options);
+    this.cwd = this.destinationPath(this.props.projectDirectory);
   }
 
   writing() {
@@ -54,11 +55,7 @@ module.exports = class extends BaseGenerator {
   }
 
   install() {
-    this.npmInstall(dependencies, {}, { cwd: this.destinationPath(this.options.projectDirectory) });
-    this.npmInstall(
-      devDependencies,
-      { saveDev: true },
-      { cwd: this.destinationPath(this.options.projectDirectory) },
-    );
+    this.npmInstall(dependencies, {}, { cwd: this.cwd });
+    this.npmInstall(devDependencies, { saveDev: true }, { cwd: this.cwd });
   }
 };

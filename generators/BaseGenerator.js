@@ -86,26 +86,6 @@ module.exports = class extends Generator {
   }
 
   /**
-   * Prompt the user for the module name.
-   *
-   * @see {@link https://github.com/SBoudrias/inquirer-npm-name}
-   * @see {@link https://github.com/SBoudrias/Inquirer.js#question}
-   *
-   * @param {object|string} - An Inquirer prompt configuration or just a string to serve as name.
-   * @return {object} - Module name parts, including `name`, `localName` and possibly `scopeName`.
-   */
-  async askPackageVsApplication() {
-    const { isPackage } = await this.prompt({
-      name: 'isPackage',
-      message: 'Is this a package (as opposed to an application)?',
-      default: true,
-      type: 'confirm',
-    });
-
-    return isPackage;
-  }
-
-  /**
    * Log the project directory error with instructions for the user.
    *
    * @param {string} [sub] - Sub generator name.
@@ -133,17 +113,6 @@ module.exports = class extends Generator {
     const gitRepo = `${this.props.githubAccount}/${this.props.localName}`;
     const secretsUrl = `https://github.com/${gitRepo}/settings/secrets`;
 
-    if (!this.props.new) {
-      this.log();
-      this.log(
-        chalk.cyan(
-          `Success! The project was updated in ${chalk.green(`${this.props.projectDirectory}`)}.`,
-        ),
-      );
-
-      return;
-    }
-
     this.log();
     this.log(
       chalk.cyan(
@@ -155,6 +124,16 @@ module.exports = class extends Generator {
       this.log(
         chalk.cyan(
           `In order to deploy your package to npm, you need to add an NPM_TOKEN secret in GitHub: ${chalk.green(
+            secretsUrl,
+          )}`,
+        ),
+      );
+    }
+    if (this.props.pushToDocker) {
+      this.log();
+      this.log(
+        chalk.cyan(
+          `In order to push your app to Docker Hub, you need to add an DOCKER_USERNAME & DOCKER_PASSWORD secrets in GitHub: ${chalk.green(
             secretsUrl,
           )}`,
         ),
