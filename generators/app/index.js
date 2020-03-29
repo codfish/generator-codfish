@@ -2,7 +2,7 @@ const extend = require('lodash/merge');
 const kebabCase = require('lodash/kebabCase');
 const githubUsername = require('github-username');
 const BaseGenerator = require('../BaseGenerator');
-const { askForModuleName, getModuleNameParts } = require('../utils');
+const { askForModuleName } = require('../utils');
 
 const dependencies = [];
 const devDependencies = [];
@@ -50,8 +50,6 @@ module.exports = class extends BaseGenerator {
    * Create new github repository.
    */
   _createGithubRepo() {
-    if (!this.props.createRepo) return;
-
     try {
       this.spawnCommandSync('sh', [
         require.resolve('../../bin/create-repo.sh'),
@@ -69,72 +67,51 @@ module.exports = class extends BaseGenerator {
     // set destination directory
     this.cwd = this.destinationPath(this.options.projectDirectory);
 
-    // read current package.json
-    this.pkg = this.fs.readJSON(this.destinationPath(this.cwd, 'package.json'), { exists: false });
-
-    // Set the default props from the existing package.json, options & set
-    // `new` property to denote whether we're generating into a new directory
-    this.props = extend(
-      {
-        name: this.pkg.name,
-        description: this.pkg.description,
-        authorName: typeof this.pkg.author === 'object' && this.pkg.author.name,
-        authorEmail: typeof this.pkg.author === 'object' && this.pkg.author.email,
-        authorUrl: typeof this.pkg.author === 'object' && this.pkg.author.url,
-        homepage: this.pkg.homepage,
-        devDep: false,
-      },
-      this.options,
-      { new: this.pkg.exists !== false },
-    );
-
     // initialize git repo
     this.initGitRepo(this.options.projectDirectory);
+
+    // merge props and options
+    this.props = extend(this.props, this.options);
   }
 
   async prompting() {
     // First, get the module name
-    const moduleNameParts = this.props.new
-      ? await askForModuleName({
-          default: this.getAppname(),
-          filter: x => kebabCase(x).toLowerCase(),
-        })
-      : getModuleNameParts(this.props.name);
-
-    // Is this a reusable package or an application
-    const isPackage = this.props.new
-      ? await this.askPackageVsApplication()
-      : this.pkg.private !== true;
+    const moduleNameParts = await askForModuleName({
+      default: this.getAppname(),
+      filter: x => kebabCase(x).toLowerCase(),
+    });
 
     const prompts = [
+      {
+        name: 'isPackage',
+        message: 'Is this an npm package (as opposed to an application)?',
+        default: true,
+        type: 'confirm',
+      },
       {
         name: 'devDep',
         message: 'Should people install this as one of their devDependencies?',
         default: false,
         type: 'confirm',
-        when: this.props.new && isPackage,
+        when: ({ isPackage }) => isPackage,
       },
       {
         name: 'description',
         message: 'Project description?',
-        when: !this.props.description,
       },
       {
         name: 'homepage',
         message: 'Project homepage url',
-        when: !this.props.homepage,
       },
       {
         name: 'authorName',
         message: "Author's Name",
-        when: !this.props.authorName && !this.pkg.author,
         default: this.user.git.name(),
         store: true,
       },
       {
         name: 'authorEmail',
         message: "Author's Email",
-        when: !this.props.authorEmail && !this.pkg.author,
         default: this.user.git.email(),
         store: true,
       },
@@ -142,22 +119,21 @@ module.exports = class extends BaseGenerator {
         name: 'authorUrl',
         message: "Author's Homepage",
         default: 'https://codfish.io',
-        when: !this.props.authorUrl && !this.props.author,
         store: true,
       },
       {
         name: 'createRepo',
         message: 'Create a repository for you in GitHub?',
-        when: this.props.new,
         default: false,
         type: 'confirm',
+        when: !this.props.skipGithub,
       },
     ];
     const answers = await this.prompt(prompts);
 
     // Then ask for github account
     const { githubAccount } = await this._askForGithubAccount(
-      answers.authorEmail || this.props.authorEmail,
+      answers.authorEmail,
       moduleNameParts.scopeName,
     );
 
@@ -179,15 +155,15 @@ module.exports = class extends BaseGenerator {
     // - `authorName` - Git user's full name.
     // - `authorEmail` - Git user's email.
     // - `authorUrl` - Git user's website url.
-    extend(this.props, answers, moduleNameParts, { isPackage, githubAccount });
+    extend(this.props, answers, moduleNameParts, { githubAccount });
   }
 
   default() {
-    if (!this.props.skipGithub) {
+    if (!this.props.skipGithub && this.props.createRepo) {
       this._createGithubRepo();
     }
 
-    this.composeWith(require.resolve('../linting'), this.props);
+    this.composeWith(require.resolve('../linting'), this.props, { composed: true });
     this.composeWith(require.resolve('../github'), extend({}, this.props, { composed: true }));
     this.composeWith(require.resolve('generator-license'), {
       name: this.props.authorName,
@@ -228,7 +204,6 @@ module.exports = class extends BaseGenerator {
         type: 'git',
         url: `https://github.com/${this.props.githubAccount}/${this.props.localName}.git`,
       },
-      ...this.pkg,
     };
 
     // prevent npm publishing for non-packages (i.e. applications).
@@ -246,18 +221,19 @@ module.exports = class extends BaseGenerator {
     this.deleteRcFile();
 
     const repo = `git@github.com:${this.props.githubAccount}/${this.props.localName}.git`;
-    const cwd = this.props.projectDirectory;
 
     // last minute code formatting before commit
-    this.spawnCommandSync('npm', ['run', 'format'], { cwd });
+    this.spawnCommandSync('npm', ['run', 'format'], { cwd: this.cwd });
 
     // add the repo url as the `origin` remote
-    this.spawnCommandSync('git', ['remote', 'add', 'origin', repo], { cwd });
+    this.spawnCommandSync('git', ['remote', 'add', 'origin', repo], { cwd: this.cwd });
 
     // add and make initial commit
     // --no-verify is required because latest version of lint-staged requires
     // a commit before running. http://bit.ly/2viAmQM
-    this.spawnCommandSync('git', ['add', '.'], { cwd });
-    this.spawnCommandSync('git', ['commit', '--no-verify', '-m', 'feat: initial commit'], { cwd });
+    this.spawnCommandSync('git', ['add', '.'], { cwd: this.cwd });
+    this.spawnCommandSync('git', ['commit', '--no-verify', '-m', 'feat: initial commit'], {
+      cwd: this.cwd,
+    });
   }
 };

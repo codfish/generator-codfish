@@ -2,8 +2,6 @@
 
 <!-- Please link to the github issue here. -->
 
-https://github.com/<%= githubAccount %>/<%= localName %>/issues/**NUMBER**
-
 ### Description
 
 <!-- Brief description of the code changes. Add supporting screenshots & videos where applicable. -->
@@ -17,4 +15,3 @@ https://github.com/<%= githubAccount %>/<%= localName %>/issues/**NUMBER**
 - [ ] I have made all necessary changes to the documentation.
 - [ ] I have added tests to cover my changes.
 - [ ] All new and existing tests passed.
-- [ ] Any dependent changes have been merged and published.
