@@ -1,6 +1,5 @@
 const extend = require('lodash/merge');
 const kebabCase = require('lodash/kebabCase');
-const githubUsername = require('github-username');
 const BaseGenerator = require('../BaseGenerator');
 const { askForModuleName } = require('../utils');
 
@@ -15,7 +14,7 @@ module.exports = class extends BaseGenerator {
       type: String,
       required: false,
       default: '.',
-      desc: 'Project directory',
+      desc: 'The directory you want to generate into.',
     });
 
     this.option('skipGithub', {
@@ -26,50 +25,13 @@ module.exports = class extends BaseGenerator {
     });
   }
 
-  async _askForGithubAccount(email, scopeName = null) {
-    let username = scopeName;
-
-    if (!username) {
-      username = await githubUsername(email);
-    }
-
-    return this.prompt({
-      name: 'githubAccount',
-      message: 'GitHub username or organization',
-      default: username,
-    });
-  }
-
-  /**
-   * Create new github repository.
-   */
-  _createGithubRepo() {
-    try {
-      this.spawnCommandSync('sh', [
-        require.resolve('../../bin/create-repo.sh'),
-        this.props.githubAccount,
-        this.props.localName,
-      ]);
-    } catch (err) {
-      this.log(
-        'We were not able to create a new repo in Github for you. You need to create one yourself: https://github.com/new',
-      );
-    }
-  }
-
   initializing() {
-    // set destination directory
-    this.cwd = this.destinationPath(this.options.projectDirectory);
-
-    // initialize git repo
-    this.initGitRepo(this.options.projectDirectory);
-
-    // merge props and options
     this.props = extend(this.props, this.options);
+    this.cwd = this.destinationPath(this.options.projectDirectory);
+    this.gitInit(this.options.projectDirectory);
   }
 
   async prompting() {
-    // First, get the module name
     const moduleNameParts = await askForModuleName({
       default: this.getAppname(),
       filter: x => kebabCase(x).toLowerCase(),
@@ -78,7 +40,7 @@ module.exports = class extends BaseGenerator {
     const prompts = [
       {
         name: 'isPackage',
-        message: 'Is this an npm package (as opposed to an application)?',
+        message: 'Is this an npm package or application?',
         default: true,
         type: 'confirm',
       },
@@ -99,34 +61,34 @@ module.exports = class extends BaseGenerator {
       },
       {
         name: 'authorName',
-        message: "Author's Name",
+        message: "What's your name?",
         default: this.user.git.name(),
         store: true,
       },
       {
         name: 'authorEmail',
-        message: "Author's Email",
+        message: "What's your email?",
         default: this.user.git.email(),
         store: true,
       },
       {
         name: 'authorUrl',
-        message: "Author's Homepage",
+        message: "What's the URL of your website?",
         default: 'https://codfish.io',
         store: true,
       },
       {
         name: 'createRepo',
-        message: 'Create a repository for you in GitHub?',
+        message: 'Should we try to create a repository for you in GitHub?',
         default: false,
         type: 'confirm',
-        when: !this.props.skipGithub,
+        when: !this.options.skipGithub,
       },
     ];
     const answers = await this.prompt(prompts);
 
     // Then ask for github account
-    const { githubAccount } = await this._askForGithubAccount(
+    const { githubAccount } = await this.askForGithubAccount(
       answers.authorEmail,
       moduleNameParts.scopeName,
     );
@@ -154,7 +116,7 @@ module.exports = class extends BaseGenerator {
 
   default() {
     if (!this.props.skipGithub && this.props.createRepo) {
-      this._createGithubRepo();
+      this.createGithubRepo();
     }
 
     this.composeWith(require.resolve('../linting'), this.props, { composed: true });

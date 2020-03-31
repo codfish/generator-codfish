@@ -2,6 +2,7 @@ const fs = require('fs');
 const chalk = require('chalk');
 const Generator = require('yeoman-generator');
 const kebabCase = require('lodash/kebabCase');
+const githubUsername = require('github-username');
 
 /**
  * Base generator that should be extended from by all of our sub generators. This
@@ -69,22 +70,54 @@ module.exports = class extends Generator {
    *
    * @param {string} directory - Directory to initialize the repo in.
    */
-  initGitRepo(directory) {
+  gitInit(directory) {
     if (fs.existsSync(this.destinationPath(directory, '.git'))) {
       return;
     }
 
     // otherwise initialize a git repo. need to make sure directory exists first
-    this.spawnCommandSync('mkdir', ['-p', this.destinationPath(directory)], {
+    const dir = this.destinationPath(directory);
+    this.spawnCommandSync('mkdir', ['-p', dir], {
       dieOnError: true,
-      message: `Error: could not create directory ${this.destinationPath(directory)}`,
+      message: `Error: could not create directory ${dir}`,
     });
 
     this.spawnCommandSync('git', ['init', '--quiet'], {
-      cwd: this.destinationPath(directory),
+      cwd: dir,
       dieOnError: true,
       message: 'Encountered an issue initiating this as a git repository',
     });
+  }
+
+  async askForGithubAccount(email, scopeName = null) {
+    let username = scopeName;
+
+    if (!username) {
+      username = await githubUsername(email);
+    }
+
+    return this.prompt({
+      name: 'githubAccount',
+      message: 'What is your GitHub username or organization?',
+      default: username,
+    });
+  }
+
+  /**
+   * Create new github repository.
+   */
+  createGitHubRepo() {
+    try {
+      this.spawnCommandSync('sh', [
+        require.resolve('../../bin/create-repo.sh'),
+        this.props.githubAccount,
+        this.props.localName,
+      ]);
+    } catch (err) {
+      this.log(
+        'We were not able to create a new repo in Github for you. You need to create one yourself: https://github.com/new',
+      );
+    }
   }
 
   /**

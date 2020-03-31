@@ -26,13 +26,13 @@ module.exports = class extends BaseGenerator {
     const prompts = [
       {
         name: 'pushToDocker',
-        message: 'Pushing to Docker Hub?',
+        message: 'Will you need to push this project to Docker Hub?',
         default: false,
         type: 'confirm',
       },
       {
         name: 'dockerId',
-        message: 'Docker username or organization',
+        message: 'What is your Docker username or organization?',
         default: username,
         when: ({ pushToDocker }) => pushToDocker,
       },
@@ -41,20 +41,16 @@ module.exports = class extends BaseGenerator {
     const { pushToDocker, dockerId } = await this.prompt(prompts);
     extend(this.props, { pushToDocker, dockerId });
 
-    // If this generator was called directly we need to promt users.
-    // Otherwise it was composed with a larger generator, so we should return early.
-    if (this.props.composed) return;
+    // If this generator was called directly we need to ask for the module/app
+    // name to use as the docker repo name.
+    if (!this.props.composed && pushToDocker) {
+      const { localName } = await askForModuleName({
+        default: this.getAppname(),
+        filter: x => kebabCase(x).toLowerCase(),
+      });
 
-    const pkg = this.fs.readJSON(this.destinationPath(this.cwd, 'package.json'));
-
-    const { localName } = pkg.name
-      ? { localName: pkg.name }
-      : await askForModuleName({
-          default: this.getAppname(),
-          filter: x => kebabCase(x).toLowerCase(),
-        });
-
-    extend(this.props, { localName });
+      extend(this.props, { localName });
+    }
   }
 
   writing() {
