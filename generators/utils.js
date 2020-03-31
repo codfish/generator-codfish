@@ -57,6 +57,7 @@ const askForModuleName = async prompt => {
     extend(
       {
         name: 'name',
+        message: 'What do you want to name your module?',
         default: path.basename(process.cwd()),
       },
       prompt,

@@ -5,8 +5,10 @@
 Ultimate goal is to get up and running as quickly as possible. This is a generator I will use to
 scaffold out new projects and npm modules. It goes further than just setting up code. It will also:
 
-- Create a new Github repo for you ([more details below](#Github))
-- Sets up auto-linting on commit, as well as CI/CD
+- Sets up auto-linting on commit with [`cod-scripts`](https://github.com/codfish/cod-scripts).
+- Sets up some basic GitHub Actions workflows with automated versioning & deployments with
+  [semantic-release](https://github.com/semantic-release/semantic-release).
+- Optionally creates a new GitHub repo for you.
 - Init's git and makes an initial commit. All you need to do is `git push origin master`.
 
 <!-- START doctoc -->
@@ -14,59 +16,65 @@ scaffold out new projects and npm modules. It goes further than just setting up 
 
 ## Installation
 
-I recommend using `npx` so you don't need to keep your global install up to date.
+**Recommended:** Don't install globally, just run with `npx`.
 
 ```sh
-npx -p yo -p generator-codfish -c 'yo codfish app-directory'
+npx -p yo -p generator-codfish -c 'yo codfish'
 ```
 
-Or you can go the old school way and install [Yeoman](http://yeoman.io) and `generator-codfish`
-using [npm](https://www.npmjs.com/).
+Or go old school:
 
 ```sh
 npm install -g yo generator-codfish
 ```
 
+With generators you're typically always looking to use the latest & greatest when generating so I
+prefer `npx` so you don't need to keep your global installation up to date.
+
 ## Usage
 
-Generate your new project:
-
 ```sh
-npx -p yo -p generator-codfish -c 'yo codfish[:<sub>] [<project-directory>] [<options>]'
+yo codfish
 ```
 
-or
+### Advanced Usage
 
 ```sh
 yo codfish[:<sub>] [<project-directory>] [<options>]
 ```
 
-- **project-directory** - Directory to generate into. The current directory will be used by default.
+- **project-directory** - Directory to generate into. Will make the directory for you if it doesn't
+  exist. The current directory will be used by default.
 - **sub** - Optional sub generator.
 - **options** - Optional flags to pass to the generator to change functionality. See below for more
   details.
 
-**For Example:**
+**Examples:**
+
+**Note**: If you're using `npx` you can wrap the following examples with
+`npx -p yo -p generator-codfish -c '<example>'`.
 
 ```sh
-# Scaffold a new project into a directory named `new-module`.
-npx -p yo -p generator-codfish -c 'yo codfish new-module'
-
 # Scaffold a new project into the current directory.
-npx -p yo -p generator-codfish -c 'yo codfish .'
+yo codfish
+
+# Scaffold a new project/module into a directory named `new-module`.
+yo codfish new-module
 
 # By default the generator automatically tries to create a github repository for you.
 # This will skip that.
-npx -p yo -p generator-codfish -c 'yo codfish new-module --skip-github'
+yo codfish new-module --skip-github
 
-# To add my linting configuration & tooling to an existing project
-# you can run the linting sub generator directly. When starting a project with
-# the other generators, this will automatically be included.
-cd /path/to/project-directory
-npx -p yo -p generator-codfish -c 'yo codfish:linting .'
+# To add my linting configuration & tooling to an existing project you can
+# run the linting sub generator directly. When starting a new project
+# with the other generators, this will automatically be included.
+yo codfish:linting
+
+# To add GitHub templates & GitHub Actions workflows to an existing project
+yo codfish:github
 ```
 
-## CLI Options
+### Options
 
 - `skip-install` (Boolean, default: `false`) - Skip installation of npm dependencies.
 - `skip-github` (Boolean, default: `false`) - Skip the auto creation of a new github repository.
@@ -75,23 +83,10 @@ npx -p yo -p generator-codfish -c 'yo codfish:linting .'
 
 Remember you can see the options of each sub generators by running `yo codfish:sub --help`.
 
-- `codfish:linting` - Linting config & tooling for JS, Markdown, CSS, JSON, Git commits, etc.
-- `codfish:github` - Adds node `.gitignore`, GitHub Actions workflows & GitHub templates.
+- `yo codfish:linting` - Linting config & tooling for JS, Markdown, CSS, JSON, Git commits, etc.
+- `yo codfish:github` - Adds node `.gitignore`, GitHub Actions workflows & GitHub templates.
 
-## Advanced Examples
-
-Running sub-generators, passing options, etc.
-
-```sh
-# generate a project
-npx -p yo -p generator-codfish -c 'yo codfish my-custom-dir'
-
-# add linting to an existing project
-npx -p yo -p generator-codfish -c 'yo codfish:linting .'
-
-# add github actions to an existing project
-npx -p yo -p generator-codfish -c 'yo codfish:github .'
-```
+These are all run automatically as part of the main generator when running `yo codfish`.
 
 ## Getting To Know Yeoman
 

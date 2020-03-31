@@ -13,24 +13,14 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 
-- [The problem](#the-problem)
-- [This solution](#this-solution)
-- [Setup](#setup)
+- [Installation](#installation)
 - [Usage](#usage)
 - [Inspiration](#inspiration)
 - [LICENSE](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-## The problem
-
-// TODO
-
-## This solution
-
-// TODO
-
-<% if (isPackage) { %>## Installation
+## Installation
 
 This module is distributed via [npm](https://www.npmjs.com) which is bundled with
 [node](https://nodejs.org/en/) and should be installed as one of your project's <% if (devDep) {
@@ -39,12 +29,6 @@ This module is distributed via [npm](https://www.npmjs.com) which is bundled wit
 ```sh
 npm install --save<% if (devDep) { %>-dev<% } %> <%= name %>
 ```
-
-<% } else { %>
-
-## Setup
-
-// TODO <% } %>
 
 ## Usage
 

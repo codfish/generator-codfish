@@ -1,24 +1,16 @@
 const extend = require('lodash/merge');
 const BaseGenerator = require('../BaseGenerator');
 
-const devDependencies = ['cod-scripts'];
-
-const dependencies = ['@babel/runtime'];
-
 module.exports = class extends BaseGenerator {
   constructor(args, options) {
     super(args, options);
 
-    try {
-      this.argument('projectDirectory', {
-        type: String,
-        required: typeof options.projectDirectory === 'undefined',
-        desc: 'Project directory',
-      });
-    } catch (err) {
-      this.showProjectDirectoryErr('linting');
-      process.exit(1);
-    }
+    this.argument('projectDirectory', {
+      type: String,
+      required: false,
+      default: options.projectDirectory || '.',
+      desc: 'Project directory',
+    });
   }
 
   initializing() {
@@ -55,7 +47,7 @@ module.exports = class extends BaseGenerator {
   }
 
   install() {
-    this.npmInstall(dependencies, {}, { cwd: this.cwd });
-    this.npmInstall(devDependencies, { saveDev: true }, { cwd: this.cwd });
+    this.npmInstall(['cod-scripts'], {}, { cwd: this.cwd });
+    this.npmInstall(['@babel/runtime'], { saveDev: true }, { cwd: this.cwd });
   }
 };

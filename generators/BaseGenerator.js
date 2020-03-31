@@ -2,6 +2,7 @@ const fs = require('fs');
 const chalk = require('chalk');
 const Generator = require('yeoman-generator');
 const kebabCase = require('lodash/kebabCase');
+const githubUsername = require('github-username');
 
 /**
  * Base generator that should be extended from by all of our sub generators. This
@@ -21,12 +22,6 @@ module.exports = class extends Generator {
         this.die(opts.message);
       }
     };
-  }
-
-  getAppname() {
-    return this.props.projectDirectory === '.'
-      ? this.determineAppname()
-      : kebabCase(this.options.projectDirectory);
   }
 
   /**
@@ -61,90 +56,68 @@ module.exports = class extends Generator {
   }
 
   /**
-   * Initialize a git repository in the provided directory.
-   *
-   * If it's a git repo already, turn off the new flag to help us in future methods.
+   * Determine the name of the application/module being generated.
+   */
+  getAppname() {
+    return this.props.projectDirectory === '.'
+      ? this.determineAppname()
+      : kebabCase(this.options.projectDirectory);
+  }
+
+  /**
+   * Initialize a git repository in the provided directory. If it's a git repo already, turn off
+   * the new flag to help us in future methods.
    *
    * @param {string} directory - Directory to initialize the repo in.
    */
-  initGitRepo(directory) {
+  gitInit(directory) {
     if (fs.existsSync(this.destinationPath(directory, '.git'))) {
       return;
     }
 
     // otherwise initialize a git repo. need to make sure directory exists first
-    this.spawnCommandSync('mkdir', ['-p', this.destinationPath(directory)], {
+    const dir = this.destinationPath(directory);
+    this.spawnCommandSync('mkdir', ['-p', dir], {
       dieOnError: true,
-      message: `Error: could not create directory ${this.destinationPath(directory)}`,
+      message: `Error: could not create directory ${dir}`,
     });
 
     this.spawnCommandSync('git', ['init', '--quiet'], {
-      cwd: this.destinationPath(directory),
+      cwd: dir,
       dieOnError: true,
       message: 'Encountered an issue initiating this as a git repository',
     });
   }
 
-  /**
-   * Log the project directory error with instructions for the user.
-   *
-   * @param {string} [sub] - Sub generator name.
-   */
-  showProjectDirectoryErr(sub = '') {
-    this.log();
-    this.log(`Please specify the project directory:`);
-    this.log(
-      `  ${chalk.cyan(`yo codfish${sub && `:${sub}`}`)} ${chalk.green('<project-directory>')}`,
-    );
-    this.log();
-    this.log('For example:');
-    this.log(`  ${chalk.cyan(`yo codfish${sub && `:${sub}`}`)} ${chalk.green('foo-bar')}`);
-    this.log();
-    this.log('If you want to generate in the current directory, use a period:');
-    this.log(`  ${chalk.cyan(`yo codfish${sub && `:${sub}`} ${chalk.green('.')}`)}`);
-    this.log();
-    this.log(`Run ${chalk.cyan(`yo codfish${sub && `:${sub}`} --help`)} to see all options.`);
+  async askForGithubAccount(email, scopeName = null) {
+    let username = scopeName;
+
+    if (!username) {
+      username = await githubUsername(email);
+    }
+
+    return this.prompt({
+      name: 'githubAccount',
+      message: 'What is your GitHub username or organization?',
+      default: username,
+    });
   }
 
   /**
-   * Display a message when the generator completes.
+   * Create new github repository.
    */
-  showCompletionMessage() {
-    const gitRepo = `${this.props.githubAccount}/${this.props.localName}`;
-    const secretsUrl = `https://github.com/${gitRepo}/settings/secrets`;
-
-    this.log();
-    this.log(
-      chalk.cyan(
-        `Success! The project was generated in ${chalk.green(`${this.props.projectDirectory}`)}.`,
-      ),
-    );
-    if (this.props.isPackage) {
-      this.log();
+  createGitHubRepo() {
+    try {
+      this.spawnCommandSync('sh', [
+        require.resolve('../../bin/create-repo.sh'),
+        this.props.githubAccount,
+        this.props.localName,
+      ]);
+    } catch (err) {
       this.log(
-        chalk.cyan(
-          `In order to deploy your package to npm, you need to add an NPM_TOKEN secret in GitHub: ${chalk.green(
-            secretsUrl,
-          )}`,
-        ),
+        'We were not able to create a new repo in Github for you. You need to create one yourself: https://github.com/new',
       );
     }
-    if (this.props.pushToDocker) {
-      this.log();
-      this.log(
-        chalk.cyan(
-          `In order to push your app to Docker Hub, you need to add an DOCKER_USERNAME & DOCKER_PASSWORD secrets in GitHub: ${chalk.green(
-            secretsUrl,
-          )}`,
-        ),
-      );
-    }
-    this.log();
-    this.log(
-      chalk.cyan(
-        `We've initialized a git repo ${chalk.green(gitRepo)} and made an initial commit for you.`,
-      ),
-    );
   }
 
   /**
@@ -177,9 +150,9 @@ module.exports = class extends Generator {
    * Behind the scenes, Yeoman will change the current directory to the .yo-rc.json
    * file location and run the requested generator there."
    *
-   * NOTE: I'm not in favor of this feature, and find it causing more issues
-   * than it does solving problems. I prefer knowing explicitly where I'm generating.
-   * So deleting it prevents this functionality.
+   * NOTE: I'm not in favor of this feature, and find it causes more issues than it does solve
+   * problems. I prefer knowing explicitly where I'm generating. So deleting it prevents this
+   * functionality.
    *
    * @see {@link https://yeoman.io/authoring/#finding-the-project-root}
    */
