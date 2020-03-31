@@ -155,7 +155,7 @@ module.exports = class extends BaseGenerator {
       },
     };
 
-    this.fs.writeJSON(this.destinationPath(this.cwd, 'package.json'), pkg);
+    this.fs.extendJSON(this.destinationPath(this.cwd, 'package.json'), pkg);
     this.copyTpl(this.templatePath('**'), this.cwd, this.props);
   }
 
