@@ -23,12 +23,6 @@ module.exports = class extends Generator {
     };
   }
 
-  getAppname() {
-    return this.props.projectDirectory === '.'
-      ? this.determineAppname()
-      : kebabCase(this.options.projectDirectory);
-  }
-
   /**
    * Proxy to Yeoman's `this.fs.copy`, with some default copy options.
    *
@@ -61,9 +55,17 @@ module.exports = class extends Generator {
   }
 
   /**
-   * Initialize a git repository in the provided directory.
-   *
-   * If it's a git repo already, turn off the new flag to help us in future methods.
+   * Determine the name of the application/module being generated.
+   */
+  getAppname() {
+    return this.props.projectDirectory === '.'
+      ? this.determineAppname()
+      : kebabCase(this.options.projectDirectory);
+  }
+
+  /**
+   * Initialize a git repository in the provided directory. If it's a git repo already, turn off
+   * the new flag to help us in future methods.
    *
    * @param {string} directory - Directory to initialize the repo in.
    */
@@ -86,24 +88,43 @@ module.exports = class extends Generator {
   }
 
   /**
-   * Log the project directory error with instructions for the user.
+   * Kills the generator. Catches errors in child processes and fails gracefully.
+   * Get's called from our monkey-patched version of Yeoman's spawnCommandSync method.
    *
-   * @param {string} [sub] - Sub generator name.
+   * @param {string} message - Error message to display.
    */
-  showProjectDirectoryErr(sub = '') {
+  die(message) {
     this.log();
-    this.log(`Please specify the project directory:`);
-    this.log(
-      `  ${chalk.cyan(`yo codfish${sub && `:${sub}`}`)} ${chalk.green('<project-directory>')}`,
-    );
+    this.log(chalk.red(message));
     this.log();
-    this.log('For example:');
-    this.log(`  ${chalk.cyan(`yo codfish${sub && `:${sub}`}`)} ${chalk.green('foo-bar')}`);
+    this.log(chalk.red('Woops, something went wrong =('));
     this.log();
-    this.log('If you want to generate in the current directory, use a period:');
-    this.log(`  ${chalk.cyan(`yo codfish${sub && `:${sub}`} ${chalk.green('.')}`)}`);
+    this.log(chalk.red(`If this is a bug end please open up an issue:`));
+    this.log(`  https://github.com/codfish/generator-codfish/issues`);
     this.log();
-    this.log(`Run ${chalk.cyan(`yo codfish${sub && `:${sub}`} --help`)} to see all options.`);
+    this.log(chalk.red('Otherwise please resolve any issues and re-run the generator'));
+    this.log();
+    this.env.error();
+  }
+
+  /**
+   * Delete the `.yo-rc.json` file.
+   *
+   * From Yeoman Docs:
+   *
+   * "Most importantly, Yeoman searches the directory tree for a .yo-rc.json file.
+   * If found, it considers the location of the file as the root of the project.
+   * Behind the scenes, Yeoman will change the current directory to the .yo-rc.json
+   * file location and run the requested generator there."
+   *
+   * NOTE: I'm not in favor of this feature, and find it causes more issues than it does solve
+   * problems. I prefer knowing explicitly where I'm generating. So deleting it prevents this
+   * functionality.
+   *
+   * @see {@link https://yeoman.io/authoring/#finding-the-project-root}
+   */
+  deleteRcFile() {
+    this.spawnCommandSync('rm', [this.destinationPath('.yo-rc.json'), '.yo-rc.json']);
   }
 
   /**
@@ -145,45 +166,5 @@ module.exports = class extends Generator {
         `We've initialized a git repo ${chalk.green(gitRepo)} and made an initial commit for you.`,
       ),
     );
-  }
-
-  /**
-   * Kills the generator. Catches errors in child processes and fails gracefully.
-   * Get's called from our monkey-patched version of Yeoman's spawnCommandSync method.
-   *
-   * @param {string} message - Error message to display.
-   */
-  die(message) {
-    this.log();
-    this.log(chalk.red(message));
-    this.log();
-    this.log(chalk.red('Woops, something went wrong =('));
-    this.log();
-    this.log(chalk.red(`If this is a bug end please open up an issue:`));
-    this.log(`  https://github.com/codfish/generator-codfish/issues`);
-    this.log();
-    this.log(chalk.red('Otherwise please resolve any issues and re-run the generator'));
-    this.log();
-    this.env.error();
-  }
-
-  /**
-   * Delete the `.yo-rc.json` file.
-   *
-   * From Yeoman Docs:
-   *
-   * "Most importantly, Yeoman searches the directory tree for a .yo-rc.json file.
-   * If found, it considers the location of the file as the root of the project.
-   * Behind the scenes, Yeoman will change the current directory to the .yo-rc.json
-   * file location and run the requested generator there."
-   *
-   * NOTE: I'm not in favor of this feature, and find it causing more issues
-   * than it does solving problems. I prefer knowing explicitly where I'm generating.
-   * So deleting it prevents this functionality.
-   *
-   * @see {@link https://yeoman.io/authoring/#finding-the-project-root}
-   */
-  deleteRcFile() {
-    this.spawnCommandSync('rm', [this.destinationPath('.yo-rc.json'), '.yo-rc.json']);
   }
 };

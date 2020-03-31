@@ -11,18 +11,12 @@ module.exports = class extends BaseGenerator {
   constructor(args, options) {
     super(args, options);
 
-    // Require the project directory as the first argument
-    try {
-      this.argument('projectDirectory', {
-        type: String,
-        required: false,
-        default: '.',
-        desc: 'Project directory',
-      });
-    } catch (err) {
-      this.showProjectDirectoryErr();
-      process.exit(1);
-    }
+    this.argument('projectDirectory', {
+      type: String,
+      required: false,
+      default: '.',
+      desc: 'Project directory',
+    });
 
     this.option('skipGithub', {
       type: Boolean,

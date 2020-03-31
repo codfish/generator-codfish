@@ -9,16 +9,11 @@ module.exports = class extends BaseGenerator {
   constructor(args, options) {
     super(args, options);
 
-    try {
-      this.argument('projectDirectory', {
-        type: String,
-        required: typeof options.projectDirectory === 'undefined',
-        desc: 'Project directory',
-      });
-    } catch (err) {
-      this.showProjectDirectoryErr('linting');
-      process.exit(1);
-    }
+    this.argument('projectDirectory', {
+      type: String,
+      required: typeof options.projectDirectory === 'undefined',
+      desc: 'Project directory',
+    });
   }
 
   initializing() {
