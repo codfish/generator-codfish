@@ -2,7 +2,6 @@ const fs = require('fs');
 const chalk = require('chalk');
 const Generator = require('yeoman-generator');
 const kebabCase = require('lodash/kebabCase');
-const githubUsername = require('github-username');
 
 /**
  * Base generator that should be extended from by all of our sub generators. This
@@ -89,31 +88,18 @@ module.exports = class extends Generator {
     });
   }
 
-  async askForGithubAccount(email, scopeName = null) {
-    let username = scopeName;
-
-    if (!username) {
-      username = await githubUsername(email);
-    }
-
-    return this.prompt({
-      name: 'githubAccount',
-      message: 'What is your GitHub username or organization?',
-      default: username,
-    });
-  }
-
   /**
    * Create new github repository.
    */
   createGitHubRepo() {
     try {
       this.spawnCommandSync('sh', [
-        require.resolve('../../bin/create-repo.sh'),
+        require.resolve('./../bin/create-repo.sh'),
         this.props.githubAccount,
         this.props.localName,
       ]);
     } catch (err) {
+      console.error(err);
       this.log(
         'We were not able to create a new repo in Github for you. You need to create one yourself: https://github.com/new',
       );
