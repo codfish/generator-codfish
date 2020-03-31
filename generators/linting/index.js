@@ -7,7 +7,8 @@ module.exports = class extends BaseGenerator {
 
     this.argument('projectDirectory', {
       type: String,
-      required: typeof options.projectDirectory === 'undefined',
+      required: false,
+      default: options.projectDirectory || '.',
       desc: 'Project directory',
     });
   }
