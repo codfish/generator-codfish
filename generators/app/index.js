@@ -1,6 +1,7 @@
 const chalk = require('chalk');
 const extend = require('lodash/merge');
 const kebabCase = require('lodash/kebabCase');
+const githubUsername = require('github-username');
 const BaseGenerator = require('../BaseGenerator');
 const { askForModuleName } = require('../utils');
 
@@ -72,6 +73,13 @@ module.exports = class extends BaseGenerator {
         store: true,
       },
       {
+        name: 'githubAccount',
+        message: 'What is your GitHub username or organization?',
+        default: async ({ authorEmail }) => {
+          return moduleNameParts.scopeName || githubUsername(authorEmail);
+        },
+      },
+      {
         name: 'createRepo',
         message: 'Should we try to create a repository for you in GitHub?',
         default: false,
@@ -81,15 +89,9 @@ module.exports = class extends BaseGenerator {
     ];
     const answers = await this.prompt(prompts);
 
-    // Then ask for github account
-    const { githubAccount } = await this.askForGithubAccount(
-      answers.authorEmail,
-      moduleNameParts.scopeName,
-    );
-
     // if no homepage was given, set it to github repo
-    if (!answers.homepage && githubAccount) {
-      answers.homepage = `https://github.com/${githubAccount}/${moduleNameParts.localName}`;
+    if (!answers.homepage && answers.githubAccount) {
+      answers.homepage = `https://github.com/${answers.githubAccount}/${moduleNameParts.localName}`;
     }
 
     // Merging all of the following into `this.props` for easy access throughout the generator.
@@ -104,12 +106,13 @@ module.exports = class extends BaseGenerator {
     // - `authorName` - Git user's full name.
     // - `authorEmail` - Git user's email.
     // - `authorUrl` - Git user's website url.
-    extend(this.props, answers, moduleNameParts, { githubAccount });
+    // - `createRepo` - Whether the user wanted us to create a GitHub repo for them.
+    extend(this.props, answers, moduleNameParts);
   }
 
   default() {
     if (!this.props.skipGithub && this.props.createRepo) {
-      this.createGithubRepo();
+      this.createGitHubRepo();
     }
 
     this.composeWith(require.resolve('../linting'), this.props, { composed: true });
@@ -155,7 +158,7 @@ module.exports = class extends BaseGenerator {
       },
     };
 
-    this.fs.writeJSON(this.destinationPath(this.cwd, 'package.json'), pkg);
+    this.fs.extendJSON(this.destinationPath(this.cwd, 'package.json'), pkg);
     this.copyTpl(this.templatePath('**'), this.cwd, this.props);
   }
 

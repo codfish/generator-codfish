@@ -9,7 +9,8 @@
     "url": "https://codfish.io/"
   },
   "files": [
-    "generators"
+    "generators",
+    "bin"
   ],
   "main": "generators/index.js",
   "repository": "codfish/generator-codfish",
