@@ -34,7 +34,7 @@ module.exports = class extends BaseGenerator {
       husky: {
         hooks: {
           'pre-commit': 'cod-scripts pre-commit',
-          'commit-msg': 'commitlint -E HUSKY_GIT_PARAMS',
+          'commit-msg': 'cod-scripts commitlint -E HUSKY_GIT_PARAMS',
         },
       },
     };
