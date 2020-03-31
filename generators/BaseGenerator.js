@@ -159,43 +159,4 @@ module.exports = class extends Generator {
   deleteRcFile() {
     this.spawnCommandSync('rm', [this.destinationPath('.yo-rc.json'), '.yo-rc.json']);
   }
-
-  /**
-   * Display a message when the generator completes.
-   */
-  showCompletionMessage() {
-    const gitRepo = `${this.props.githubAccount}/${this.props.localName}`;
-    const secretsUrl = `https://github.com/${gitRepo}/settings/secrets`;
-
-    this.log();
-    this.log(
-      chalk.cyan(
-        `Success! The project was generated in ${chalk.green(`${this.props.projectDirectory}`)}.`,
-      ),
-    );
-    this.log();
-    this.log(
-      chalk.cyan(
-        `In order to deploy your package to npm, you need to add an NPM_TOKEN secret in GitHub: ${chalk.green(
-          secretsUrl,
-        )}`,
-      ),
-    );
-    if (this.props.pushToDocker) {
-      this.log();
-      this.log(
-        chalk.cyan(
-          `In order to push your app to Docker Hub, you need to add an DOCKER_USERNAME & DOCKER_PASSWORD secrets in GitHub: ${chalk.green(
-            secretsUrl,
-          )}`,
-        ),
-      );
-    }
-    this.log();
-    this.log(
-      chalk.cyan(
-        `We've initialized a git repo ${chalk.green(gitRepo)} and made an initial commit for you.`,
-      ),
-    );
-  }
 };

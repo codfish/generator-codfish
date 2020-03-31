@@ -1,3 +1,4 @@
+const chalk = require('chalk');
 const extend = require('lodash/merge');
 const kebabCase = require('lodash/kebabCase');
 const BaseGenerator = require('../BaseGenerator');
@@ -159,16 +160,17 @@ module.exports = class extends BaseGenerator {
   }
 
   end() {
-    this.on('end', () => this.showCompletionMessage());
     this.deleteRcFile();
 
-    const repo = `git@github.com:${this.props.githubAccount}/${this.props.localName}.git`;
+    const repo = `${this.props.githubAccount}/${this.props.localName}`;
+    const secretsUrl = `https://github.com/${repo}/settings/secrets`;
+    const remoteUrl = `git@github.com:${repo}.git`;
 
     // last minute code formatting before commit
     this.spawnCommandSync('npm', ['run', 'format'], { cwd: this.cwd });
 
     // add the repo url as the `origin` remote
-    this.spawnCommandSync('git', ['remote', 'add', 'origin', repo], { cwd: this.cwd });
+    this.spawnCommandSync('git', ['remote', 'add', 'origin', remoteUrl], { cwd: this.cwd });
 
     // add and make initial commit
     // --no-verify is required because latest version of lint-staged requires
@@ -177,5 +179,26 @@ module.exports = class extends BaseGenerator {
     this.spawnCommandSync('git', ['commit', '--no-verify', '-m', 'feat: initial commit'], {
       cwd: this.cwd,
     });
+
+    this.log();
+    this.log(
+      chalk.cyan(
+        `Success! The project was generated in ${chalk.green(`${this.props.projectDirectory}`)}.`,
+      ),
+    );
+    this.log();
+    this.log(
+      chalk.cyan(
+        `In order to deploy your package to npm, you need to add an NPM_TOKEN secret in GitHub: ${chalk.green(
+          secretsUrl,
+        )}`,
+      ),
+    );
+    this.log();
+    this.log(
+      chalk.cyan(
+        `We've initialized a git repo ${chalk.green(repo)} and made an initial commit for you.`,
+      ),
+    );
   }
 };
