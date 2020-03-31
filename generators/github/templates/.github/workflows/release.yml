@@ -25,34 +25,11 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           CI: true
-<% if (pushToDocker) { %>
-      - name: docker login
-        run: echo "$DOCKER_PASSWORD" | docker login -u $DOCKER_USERNAME --password-stdin
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: docker build
-        run: docker build -t <%= dockerId %>/<%= localName %>:latest .
-
-      - name: docker push latest
-        run: docker push <%= dockerId %>/<%= localName %>:latest
-<% } %>
       - name: semantic release
         uses: codfish/semantic-release-action@v1
         id: semantic
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-<% if (pushToDocker) { %>
-      - name: docker push versions
-        if: steps.semantic.outputs.new-release-published == 'true'
-        run: |
-          docker tag <%= dockerId %>/<%= localName %> <%= dockerId %>/<%= localName %>:$VERSION_TAG
-          docker tag <%= dockerId %>/<%= localName %> <%= dockerId %>/<%= localName %>:$MAJOR_TAG
-          docker push <%= dockerId %>/<%= localName %>:$VERSION_TAG
-          docker push <%= dockerId %>/<%= localName %>:$MAJOR_TAG
-        env:
-          VERSION_TAG: v${{ steps.semantic.outputs.release-version }}
-          MAJOR_TAG: v${{ steps.semantic.outputs.release-major }}
-<% } %>
+

@@ -39,17 +39,10 @@ module.exports = class extends BaseGenerator {
 
     const prompts = [
       {
-        name: 'isPackage',
-        message: 'Is this an npm package or application?',
-        default: true,
-        type: 'confirm',
-      },
-      {
         name: 'devDep',
         message: 'Should people install this as one of their devDependencies?',
         default: false,
         type: 'confirm',
-        when: ({ isPackage }) => isPackage,
       },
       {
         name: 'description',
@@ -104,7 +97,6 @@ module.exports = class extends BaseGenerator {
     // - `name` - Full module name. `@codfish/foo` or `cod-scripts`
     // - `localName` - Full module name or local name of a scoped module. `@codfish/foo` # => 'foo'
     // - `scopeName` - Scope of a scoped module name. `@codfish/foo` # => "codfish"
-    // - `isPackage` - If this is a package and NOT an application.
     // - `description` - Module description.
     // - `homepage` - Homepage for this module.
     // - `githubAccount` - Git username or org.
@@ -161,12 +153,6 @@ module.exports = class extends BaseGenerator {
         url: `https://github.com/${this.props.githubAccount}/${this.props.localName}.git`,
       },
     };
-
-    // prevent npm publishing for non-packages (i.e. applications).
-    // semantic-release will still run to help cut new github releases.
-    if (!this.props.isPackage) {
-      pkg.private = true;
-    }
 
     this.fs.writeJSON(this.destinationPath(this.cwd, 'package.json'), pkg);
     this.copyTpl(this.templatePath('**'), this.cwd, this.props);

@@ -173,16 +173,14 @@ module.exports = class extends Generator {
         `Success! The project was generated in ${chalk.green(`${this.props.projectDirectory}`)}.`,
       ),
     );
-    if (this.props.isPackage) {
-      this.log();
-      this.log(
-        chalk.cyan(
-          `In order to deploy your package to npm, you need to add an NPM_TOKEN secret in GitHub: ${chalk.green(
-            secretsUrl,
-          )}`,
-        ),
-      );
-    }
+    this.log();
+    this.log(
+      chalk.cyan(
+        `In order to deploy your package to npm, you need to add an NPM_TOKEN secret in GitHub: ${chalk.green(
+          secretsUrl,
+        )}`,
+      ),
+    );
     if (this.props.pushToDocker) {
       this.log();
       this.log(
