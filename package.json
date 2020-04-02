@@ -34,7 +34,7 @@
     "yarn": ">=1"
   },
   "dependencies": {
-    "chalk": "^3.0.0",
+    "chalk": "^4.0.0",
     "generator-license": "^5.4.0",
     "github-username": "^5.0.1",
     "inquirer": "^7.1.0",
