@@ -47,7 +47,7 @@ module.exports = class extends BaseGenerator {
   }
 
   install() {
-    this.npmInstall(['cod-scripts'], {}, { cwd: this.cwd });
-    this.npmInstall(['@babel/runtime'], { saveDev: true }, { cwd: this.cwd });
+    this.npmInstall(['cod-scripts'], { saveDev: true }, { cwd: this.cwd });
+    this.npmInstall(['@babel/runtime'], {}, { cwd: this.cwd });
   }
 };
