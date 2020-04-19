@@ -29,8 +29,8 @@ module.exports = class extends BaseGenerator {
 
   initializing() {
     this.props = extend(this.props, this.options);
-    this.cwd = this.destinationPath(this.options.projectDirectory);
-    this.gitInit(this.options.projectDirectory);
+    this.cwd = this.destinationRoot(this.options.projectDirectory);
+    this.gitInit();
   }
 
   async prompting() {
@@ -115,14 +115,14 @@ module.exports = class extends BaseGenerator {
       this.createGitHubRepo();
     }
 
-    this.composeWith(require.resolve('../linting'), this.props, { composed: true });
+    this.composeWith(require.resolve('../linting'), extend({}, this.props, { composed: true }));
     this.composeWith(require.resolve('../github'), extend({}, this.props, { composed: true }));
     this.composeWith(require.resolve('generator-license'), {
       name: this.props.authorName,
       email: this.props.authorEmail,
       website: this.props.authorUrl,
       license: 'MIT',
-      output: `${this.cwd}/LICENSE`,
+      output: 'LICENSE',
     });
   }
 
@@ -158,7 +158,7 @@ module.exports = class extends BaseGenerator {
       },
     };
 
-    this.fs.extendJSON(this.destinationPath(this.cwd, 'package.json'), pkg);
+    this.fs.extendJSON(this.destinationPath('package.json'), pkg);
     this.copyTpl(this.templatePath('**'), this.cwd, this.props);
   }
 

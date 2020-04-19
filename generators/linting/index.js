@@ -14,12 +14,16 @@ module.exports = class extends BaseGenerator {
   }
 
   initializing() {
-    this.props = extend(this.props, this.options);
-    this.cwd = this.destinationPath(this.props.projectDirectory);
+    this.props = extend({}, this.props, this.options);
+
+    // If this sub generator was called directly from cli, update destination root
+    if (!this.props.composed) {
+      this.cwd = this.destinationRoot(this.options.projectDirectory);
+    }
   }
 
   writing() {
-    const pkgJson = {
+    const pkg = {
       scripts: {
         build: 'cod-scripts build',
         'build:watch': 'npm run build -- --watch',
@@ -40,10 +44,7 @@ module.exports = class extends BaseGenerator {
     };
 
     // extend package.json with linting scripts
-    this.fs.extendJSON(
-      this.destinationPath(this.options.projectDirectory, 'package.json'),
-      pkgJson,
-    );
+    this.fs.extendJSON(this.destinationPath('package.json'), pkg);
   }
 
   install() {
