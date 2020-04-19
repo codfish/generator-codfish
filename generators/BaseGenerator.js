@@ -127,7 +127,7 @@ module.exports = class extends Generator {
   }
 
   /**
-   * Delete the `.yo-rc.json` file.
+   * Delete the `.yo-rc.json` file & `.yo-repository/` directory.
    *
    * From Yeoman Docs:
    *
@@ -142,7 +142,15 @@ module.exports = class extends Generator {
    *
    * @see {@link https://yeoman.io/authoring/#finding-the-project-root}
    */
-  deleteRcFile() {
-    this.spawnCommandSync('rm', [this.destinationPath('.yo-rc.json'), '.yo-rc.json']);
+  deleteYeomanConfigs() {
+    this.spawnCommandSync('rm', [
+      '-rf',
+      `${this.contextRoot}/.yo-repository`, // directory where `yo` was run from
+      this.destinationPath('.yo-repository'),
+    ]);
+    this.spawnCommandSync('rm', [
+      `${this.contextRoot}/.yo-rc.json`, // directory where `yo` was run from
+      this.destinationPath('.yo-rc.json'),
+    ]);
   }
 };

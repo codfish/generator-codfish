@@ -163,7 +163,7 @@ module.exports = class extends BaseGenerator {
   }
 
   end() {
-    this.deleteRcFile();
+    this.deleteYeomanConfigs();
 
     const repo = `${this.props.githubAccount}/${this.props.localName}`;
     const secretsUrl = `https://github.com/${repo}/settings/secrets`;
