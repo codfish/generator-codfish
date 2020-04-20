@@ -15,15 +15,16 @@ module.exports = class extends BaseGenerator {
 
   initializing() {
     this.props = extend({}, this.props, this.options);
-    this.cwd = this.destinationPath(this.props.projectDirectory);
+
+    // If this sub generator was called directly from cli, update destination root
+    if (!this.props.composed) {
+      this.cwd = this.destinationRoot(this.options.projectDirectory);
+    }
   }
 
   writing() {
-    this.copyTpl(this.templatePath('**'), this.cwd, this.props);
+    this.copyTpl(this.templatePath('**'), this.destinationPath(), this.props);
 
-    this.mv(
-      this.destinationPath(this.cwd, 'gitignore'),
-      this.destinationPath(this.cwd, '.gitignore'),
-    );
+    this.fs.move(this.destinationPath('gitignore'), this.destinationPath('.gitignore'));
   }
 };

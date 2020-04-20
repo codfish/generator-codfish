@@ -45,16 +45,6 @@ module.exports = class extends Generator {
   }
 
   /**
-   * Rename file. Proxy to Yeoman's `this.fs.move`.
-   *
-   * @param {string} from - Move from file path.
-   * @param {string} to - Move to file path.
-   */
-  mv(from, to) {
-    this.fs.move(this.destinationPath(from), this.destinationPath(to));
-  }
-
-  /**
    * Determine the name of the application/module being generated.
    */
   getAppname() {
@@ -66,16 +56,14 @@ module.exports = class extends Generator {
   /**
    * Initialize a git repository in the provided directory. If it's a git repo already, turn off
    * the new flag to help us in future methods.
-   *
-   * @param {string} directory - Directory to initialize the repo in.
    */
-  gitInit(directory) {
-    if (fs.existsSync(this.destinationPath(directory, '.git'))) {
+  gitInit() {
+    if (fs.existsSync(this.destinationPath('.git'))) {
       return;
     }
 
     // otherwise initialize a git repo. need to make sure directory exists first
-    const dir = this.destinationPath(directory);
+    const dir = this.destinationPath();
     this.spawnCommandSync('mkdir', ['-p', dir], {
       dieOnError: true,
       message: `Error: could not create directory ${dir}`,
@@ -127,7 +115,7 @@ module.exports = class extends Generator {
   }
 
   /**
-   * Delete the `.yo-rc.json` file.
+   * Delete the `.yo-rc.json` file & `.yo-repository/` directory.
    *
    * From Yeoman Docs:
    *
@@ -142,7 +130,15 @@ module.exports = class extends Generator {
    *
    * @see {@link https://yeoman.io/authoring/#finding-the-project-root}
    */
-  deleteRcFile() {
-    this.spawnCommandSync('rm', [this.destinationPath('.yo-rc.json'), '.yo-rc.json']);
+  deleteYeomanConfigs() {
+    this.spawnCommandSync('rm', [
+      '-rf',
+      `${this.contextRoot}/.yo-repository`, // directory where `yo` was run from
+      this.destinationPath('.yo-repository'),
+    ]);
+    this.spawnCommandSync('rm', [
+      `${this.contextRoot}/.yo-rc.json`, // directory where `yo` was run from
+      this.destinationPath('.yo-rc.json'),
+    ]);
   }
 };
