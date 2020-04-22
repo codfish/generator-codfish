@@ -13,12 +13,17 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 
+- [Motivation](#motivation)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Inspiration](#inspiration)
 - [LICENSE](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+## Motivation
+
+// TODO
 
 ## Installation
 
