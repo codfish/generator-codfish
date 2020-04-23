@@ -2,12 +2,10 @@
 
 > <%= description %>
 
-[![version](https://img.shields.io/npm/v/<%= name %>.svg)](http://npm.im/<%= name %>)
-[![downloads](https://img.shields.io/npm/dm/<%= name %>.svg)](http://npm-stat.com/charts.html?package=<%= name %>&from=2015-08-01)
-[![MIT License](https://img.shields.io/npm/l/<%= name %>.svg)](http://opensource.org/licenses/MIT)
-
-[![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
-[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
+[![version][version-badge]][package] [![downloads][downloads-badge]][npmcharts]
+[![GitHub Workflow Status][actions-badge]][actions-badge] [![MIT License][license-badge]][license]
+[![PRs Welcome][prs-badge]][prs] [![Semantic Release][semantic-release-badge]][semantic-release]
+[![Commitizen friendly][commitizen-badge]][commitizen]
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -46,3 +44,20 @@ npm install --save<% if (devDep) { %>-dev<% } %> <%= name %>
 ## LICENSE
 
 MIT
+
+[npm]: https://www.npmjs.com/
+[node]: https://nodejs.org
+[semantic-release]: https://github.com/semantic-release/semantic-release
+[semantic-release-badge]: https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg
+[prs]: http://makeapullrequest.com
+[prs-badge]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
+[commitizen]: http://commitizen.github.io/cz-cli/
+[commitizen-badge]: https://img.shields.io/badge/commitizen-friendly-brightgreen.svg
+[npmcharts]: http://npmcharts.com/compare/<%= name %>
+[version-badge]: https://img.shields.io/npm/v/<%= name %>.svg?style=flat-square
+[package]: https://www.npmjs.com/package/<%= name %>
+[downloads-badge]: https://img.shields.io/npm/dm/<%= name %>.svg?style=flat-square
+[license-badge]: https://img.shields.io/npm/l/<%= name %>.svg?style=flat-square
+[license]: https://github.com/<%= githubAccount %>/<%= name %>/blob/master/LICENSE
+[actions]: https://github.com/<%= githubAccount %>/<%= name %>/actions
+[actions-badge]: https://img.shields.io/github/workflow/status/<%= githubAccount %>/<%= name %>/Release/master

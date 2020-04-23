@@ -2,6 +2,11 @@
 
 > Yeoman generators to scaffold out personal projects & open source modules.
 
+[![version][version-badge]][package] [![downloads][downloads-badge]][npmcharts]
+[![GitHub Workflow Status][actions-badge]][actions-badge] [![MIT License][license-badge]][license]
+[![PRs Welcome][prs-badge]][prs] [![Semantic Release][semantic-release-badge]][semantic-release]
+[![Commitizen friendly][commitizen-badge]][commitizen]
+
 Ultimate goal is to get up and running as quickly as possible. This is a generator I will use to
 scaffold out new projects and npm modules. It goes further than just setting up code. It will also:
 
@@ -95,7 +100,25 @@ These are all run automatically as part of the main generator when running `yo c
 - Yeoman can be too opinionated at times but is easily convinced not to be.
 - Feel free to [learn more about Yeoman](http://yeoman.io/).
 
-[npm-image]: https://badge.fury.io/js/generator-codfish.svg
-[npm-url]: https://npmjs.org/package/generator-codfish
-[daviddm-image]: https://david-dm.org/codfish/generator-codfish.svg?theme=shields.io
-[daviddm-url]: https://david-dm.org/codfish/generator-codfish
+## LICENSE
+
+MIT
+
+[npm]: https://www.npmjs.com/
+[node]: https://nodejs.org
+[semantic-release]: https://github.com/semantic-release/semantic-release
+[semantic-release-badge]:
+  https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg
+[prs]: http://makeapullrequest.com
+[prs-badge]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
+[commitizen]: http://commitizen.github.io/cz-cli/
+[commitizen-badge]: https://img.shields.io/badge/commitizen-friendly-brightgreen.svg
+[npmcharts]: http://npmcharts.com/compare/generator-codfish
+[version-badge]: https://img.shields.io/npm/v/generator-codfish.svg?style=flat-square
+[package]: https://www.npmjs.com/package/generator-codfish
+[downloads-badge]: https://img.shields.io/npm/dm/generator-codfish.svg?style=flat-square
+[license-badge]: https://img.shields.io/npm/l/generator-codfish.svg?style=flat-square
+[license]: https://github.com/codfish/generator-codfish/blob/master/LICENSE
+[actions]: https://github.com/codfish/generator-codfish/actions
+[actions-badge]:
+  https://img.shields.io/github/workflow/status/codfish/generator-codfish/Release/master
