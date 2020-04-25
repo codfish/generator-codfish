@@ -48,11 +48,11 @@ MIT
 [npm]: https://www.npmjs.com/
 [node]: https://nodejs.org
 [semantic-release]: https://github.com/semantic-release/semantic-release
-[semantic-release-badge]: https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg
+[semantic-release-badge]: https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg?style=flat-square
 [prs]: http://makeapullrequest.com
 [prs-badge]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
 [commitizen]: http://commitizen.github.io/cz-cli/
-[commitizen-badge]: https://img.shields.io/badge/commitizen-friendly-brightgreen.svg
+[commitizen-badge]: https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=flat-square
 [npmcharts]: http://npmcharts.com/compare/<%= name %>
 [version-badge]: https://img.shields.io/npm/v/<%= name %>.svg?style=flat-square
 [package]: https://www.npmjs.com/package/<%= name %>
@@ -60,4 +60,4 @@ MIT
 [license-badge]: https://img.shields.io/npm/l/<%= name %>.svg?style=flat-square
 [license]: https://github.com/<%= githubAccount %>/<%= name %>/blob/master/LICENSE
 [actions]: https://github.com/<%= githubAccount %>/<%= name %>/actions
-[actions-badge]: https://img.shields.io/github/workflow/status/<%= githubAccount %>/<%= name %>/Release/master
+[actions-badge]: https://img.shields.io/github/workflow/status/<%= githubAccount %>/<%= name %>/Release/master?style=flat-square
