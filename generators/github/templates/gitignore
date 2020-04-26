@@ -93,3 +93,6 @@ typings/
 # Custom
 dist
 build
+
+.vercel
+.now
