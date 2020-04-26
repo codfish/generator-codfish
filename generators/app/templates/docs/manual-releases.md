@@ -42,3 +42,7 @@ Reference: #<the number of a relevant pull request, issue, or commit>
 ```
 
 The number of times we've had to do a manual release is: 0
+
+**Credit**
+
+Idea for this file & copy taken originally from [Kent C. Dodds](https://github.com/kentcdodds).
