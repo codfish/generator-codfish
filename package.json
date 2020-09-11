@@ -23,7 +23,7 @@
     "express api"
   ],
   "devDependencies": {
-    "cod-scripts": "^4.0.2",
+    "cod-scripts": "^5.0.0",
     "jest": "^25.4.0",
     "yeoman-assert": "^3.1.0",
     "yeoman-test": "^2.4.1"
