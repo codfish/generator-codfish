@@ -1,9 +1,3 @@
-### Related Issue
-
-<!-- Please link to the github issue here. -->
-
-### Description
-
 <!-- Brief description of the code changes. Add supporting screenshots & videos where applicable. -->
 
 ### Checklist
@@ -15,3 +9,4 @@
 - [ ] I have made all necessary changes to the documentation.
 - [ ] I have added tests to cover my changes.
 - [ ] All new and existing tests passed.
+- [ ] Any dependent changes have been merged and published.
