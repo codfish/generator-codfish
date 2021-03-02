@@ -38,7 +38,7 @@
     "generator-license": "^5.4.0",
     "github-username": "^5.0.1",
     "inquirer": "^7.3.3",
-    "inquirer-npm-name": "^3.0.0",
+    "inquirer-npm-name": "^4.0.0",
     "lodash": "^4.17.20",
     "yeoman-generator": "^4.12.0"
   },
